@@ -113,6 +113,25 @@
             height: 40vh; /* Set uniform height for all panels */
         }
 
+        .content-panel {
+    display: none;
+    background-color: #f0f0f0;
+    border: 0.2vh solid #333;
+    padding: 3vh;
+    max-height: 40vh; /* Adjust this value as needed based on your design requirements */
+    height: 40vh; /* Set a fixed height for all panels */
+    overflow-y: auto;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+/* Optional: Limit image size for responsiveness */
+.content-panel img {
+    max-width: 100%; /* Makes images responsive */
+    max-height: 20vh; /* Limits the height of images */
+    object-fit: contain; /* Ensures aspect ratio is maintained */
+}
+
         /* Dark Mode Styles */
         body.dark-mode {
             background-color: #121212;
@@ -339,6 +358,31 @@
             function toggleDarkMode() {
                 document.body.classList.toggle('dark-mode');
             }
+
+            function showContent(year) {
+    const allContent = document.querySelectorAll('.content-panel');
+    allContent.forEach(content => content.classList.remove('active'));
+
+    const contentId = '#content-' + year;
+    const content = document.querySelector(contentId);
+    if (content) {
+        content.classList.add('active');
+        scrollToTop(); // Scroll to top when a timeline item is clicked
+    }
+}
+
+function scrollToTop() {
+    const container = document.querySelector('.container');
+    container.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+}
+
         </script>
     </div>
 </body> 
