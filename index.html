@@ -22,12 +22,18 @@
             padding: 2vh;
             overflow-y: auto; /* Allow vertical scrolling */
             height: calc(100vh - 40px); /* More scroll offset */
+            margin-left: -10vw; /* Linke Margin hinzugefügt, um die Container zu zentrieren */
         }
 
         .timeline {
-            width: 30vw;
+            width: 25vw; /* Angepasste Breite für die Timeline */
             position: relative;
             padding-right: 4vw;
+        }
+
+        .content {
+            width: 75vw; /* Angepasste Breite für den Inhalt */
+            padding-left: 4vw;
         }
 
         .timeline .timeline-item {
@@ -55,11 +61,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-
-        .content {
-            width: 70vw;
-            padding-left: 4vw;
         }
 
         .content-panel {
@@ -113,24 +114,12 @@
             height: 40vh; /* Set uniform height for all panels */
         }
 
-        .content-panel {
-    display: none;
-    background-color: #f0f0f0;
-    border: 0.2vh solid #333;
-    padding: 3vh;
-    max-height: 40vh; /* Adjust this value as needed based on your design requirements */
-    height: 40vh; /* Set a fixed height for all panels */
-    overflow-y: auto;
-    opacity: 0;
-    transition: all 0.5s ease;
-}
-
-/* Optional: Limit image size for responsiveness */
-.content-panel img {
-    max-width: 100%; /* Makes images responsive */
-    max-height: 20vh; /* Limits the height of images */
-    object-fit: contain; /* Ensures aspect ratio is maintained */
-}
+        /* Optional: Limit image size for responsiveness */
+        .content-panel img {
+            max-width: 100%; /* Makes images responsive */
+            max-height: 20vh; /* Limits the height of images */
+            object-fit: contain; /* Ensures aspect ratio is maintained */
+        }
 
         /* Dark Mode Styles */
         body.dark-mode {
@@ -205,135 +194,104 @@
 
         <section id="swebdesign">
             <div id="content-webdesign" class="content-panel">
-                <h2>The Evolution of Web Design</h2>
-                <p>The journey of web design began in the early 1990s with simple text-based sites, where minimal HTML was the norm.</p>
-                <p>In the late 1990s, the introduction of CSS allowed designers to separate content from presentation, offering more control over the look and feel of websites.</p>
-                <p>Today, web design emphasizes functionality, accessibility, and performance.</p>
+                <h2>Die Evolution des Webdesigns</h2>
+                <p>Die Reise des Webdesigns begann in den frühen 1990er Jahren mit einfachen textbasierten Websites, bei denen minimales HTML die Norm war.</p>
+                <p>In den späten 1990er Jahren ermöglichte die Einführung von CSS den Designern, Inhalt von Präsentation zu trennen und bot mehr Kontrolle über das Aussehen und Gefühl von Websites.</p>
+                <p>Heute betont das Webdesign Funktionalität, Zugänglichkeit und Leistung.</p>
             </div>
         </section>
 
         <section id="s1980">
             <div id="content-1980" class="content-panel">
                 <h2>1980 - Hypercard</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <p>1980 war ein Jahr technologischer Umwälzungen, als Apple Hypercard einführte, das es Benutzern ermöglichte, interaktive Inhalte zu erstellen.</p>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
+                <img src="hypercard-home.webp" alt="Hypercard">
             </div>
         </section>
 
         <section id="s1990">
             <div id="content-1990" class="content-panel">
                 <h2>1990 - World Wide Web</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
         <section id="s2000">
             <div id="content-2000" class="content-panel">
-                <h2>2000 - Hover Effect</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <h2>2000 - Hover-Effekt</h2>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
         <section id="s2010">
             <div id="content-2010" class="content-panel">
-                <h2>2010 - Parallax Effect</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <h2>2010 - Parallax-Effekt</h2>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
         <section id="s2020">
             <div id="content-2020" class="content-panel">
-                <h2>2020 - Dark Mode</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <h2>2020 - Dunkelmodus</h2>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
         <section id="s2030">
             <div id="content-2030" class="content-panel">
-                <h2>2030 - AI-Driven Design</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <h2>2030 - KI-gesteuertes Design</h2>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
         <section id="s2040">
             <div id="content-2040" class="content-panel">
-                <h2>2040 - Immersive Experiences</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <h2>2040 - Immersive Erlebnisse</h2>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
         <section id="s2050">
             <div id="content-2050" class="content-panel">
-                <h2>2050 - Brain-Computer Interfaces</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <h2>2050 - Hirn-Computer-Schnittstellen</h2>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
         <section id="s2060">
             <div id="content-2060" class="content-panel">
-                <h2>2060 - Quantum Computing</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <h2>2060 - Quantencomputing</h2>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
         <section id="s2070">
             <div id="content-2070" class="content-panel">
-                <h2>2070 - Fully Autonomous Web</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <h2>2070 - Vollständig autonomes Web</h2>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
         <section id="s2080">
             <div id="content-2080" class="content-panel">
-                <h2>2080 - Synthetic Reality</h2>
-                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, allowing users to create interactive content.</p>
-                <p>Hypercard laid the groundwork for web pages, influencing later interactive programs.</p>
-                <img src="susankareicons.png" alt="Susan Kare Icon">
-                <p>The software was popular on early Macintosh computers.</p>
-                <img src="hypercard-home.webp" alt="hyper card">
+                <h2>2080 - Synthesereality</h2>
+                <p>1990 wird oft als das Jahr angesehen, in dem das World Wide Web geboren wurde, das die Art und Weise, wie wir Informationen suchen und teilen, grundlegend veränderte.</p>
+                <p>Tim Berners-Lee prägte mit der Entwicklung von HTML und der ersten Webbrowser einen neuen Standard für die digitale Kommunikation.</p>
             </div>
         </section>
 
-        <!-- Javascript Code -->
+        <!-- JavaScript Code -->
         <script>
             function showContent(year) {
                 const allContent = document.querySelectorAll('.content-panel');
@@ -358,31 +316,6 @@
             function toggleDarkMode() {
                 document.body.classList.toggle('dark-mode');
             }
-
-            function showContent(year) {
-    const allContent = document.querySelectorAll('.content-panel');
-    allContent.forEach(content => content.classList.remove('active'));
-
-    const contentId = '#content-' + year;
-    const content = document.querySelector(contentId);
-    if (content) {
-        content.classList.add('active');
-        scrollToTop(); // Scroll to top when a timeline item is clicked
-    }
-}
-
-function scrollToTop() {
-    const container = document.querySelector('.container');
-    container.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-}
-
         </script>
     </div>
 </body> 
