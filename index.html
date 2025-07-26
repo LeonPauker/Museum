@@ -1,1092 +1,1942 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Design & Museum Dokumentation</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-      color: #e8e8e8;
-      font-family: 'Times New Roman', serif;
-      overflow-x: hidden;
-      line-height: 1.6;
-    }
-
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(26, 26, 26, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 2px solid #c9a96e;
-      z-index: 1000;
-      padding: 1rem 2rem;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      color: #c9a96e;
-      text-align: center;
-      font-weight: 300;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .main-container {
-      display: flex;
-      margin-top: 80px;
-      min-height: calc(100vh - 80px);
-      gap: 2rem;
-      padding: 2rem;
-    }
-
-    .info-panel {
-      flex: 1;
-      max-width: 300px;
-      background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
-      border: 1px solid #c9a96e;
-      border-radius: 8px;
-      height: fit-content;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .info-panel.collapsed {
-      max-width: 80px;
-      min-width: 80px;
-    }
-
-    .info-panel.collapsed .info-content {
-      display: none;
-    }
-
-    .info-panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem;
-      margin: 0;
-      border-bottom: 2px solid #c9a96e;
-      margin-bottom: 1.5rem;
-      position: relative;
-    }
-
-    .info-panel.collapsed .info-panel-header {
-      padding: 1.5rem 0.5rem;
-      margin-bottom: 0;
-      border-bottom: none;
-      justify-content: center;
-    }
-
-    .info-panel h2 {
-      color: #c9a96e;
-      font-size: 1.2rem;
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-      flex-grow: 1;
-      padding-right: 1rem;
-    }
-
-    .info-panel.collapsed h2 {
-      opacity: 0;
-      transform: translateX(-20px);
-      font-size: 0;
-      padding-right: 0;
-    }
-
-    .toggle-btn {
-      background: linear-gradient(145deg, #c9a96e, #b8956a);
-      border: 3px solid #d4af37;
-      color: #1a1a1a;
-      width: 45px;
-      height: 45px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
-      box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
-      position: relative;
-    }
-
-    .info-panel.collapsed .toggle-btn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-    }
-
-    .toggle-btn:hover {
-      background: linear-gradient(145deg, #d4af37, #c9a96e);
-      border-color: #ffae42;
-      transform: scale(1.1);
-      box-shadow: 0 6px 20px rgba(201, 169, 110, 0.6);
-    }
-
-    .info-panel.collapsed .toggle-btn:hover {
-      transform: translate(-50%, -50%) scale(1.1);
-    }
-
-    .toggle-btn:active {
-      transform: scale(1.05);
-    }
-
-    .info-panel.collapsed .toggle-btn:active {
-      transform: translate(-50%, -50%) scale(1.05);
-    }
-
-    .toggle-btn::before {
-      content: '';
-      position: absolute;
-      top: -3px;
-      left: -3px;
-      right: -3px;
-      bottom: -3px;
-      background: linear-gradient(45deg, #c9a96e, #d4af37, #ffae42, #c9a96e);
-      border-radius: inherit;
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .info-panel.collapsed .toggle-btn::before {
-      border-radius: 50%;
-    }
-
-    .toggle-btn:hover::before {
-      opacity: 0.3;
-    }
-
-    .info-content {
-      padding: 0 2rem 2rem 2rem;
-      transition: opacity 0.3s ease;
-      overflow: hidden;
-    }
-
-    .info-section {
-      margin-bottom: 2rem;
-    }
-
-    .info-section h3 {
-      color: #d4af37;
-      font-size: 1.1rem;
-      margin-bottom: 0.8rem;
-      font-weight: 600;
-    }
-
-    .info-section p {
-      font-size: 0.95rem;
-      color: #cccccc;
-      margin-bottom: 1rem;
-    }
-
-    .methodology-list {
-      list-style: none;
-      padding: 0;
-    }
-
-    .methodology-list li {
-      padding: 0.5rem 0;
-      border-left: 3px solid #c9a96e;
-      padding-left: 1rem;
-      margin-bottom: 0.5rem;
-      background: rgba(201, 169, 110, 0.1);
-      border-radius: 0 4px 4px 0;
-    }
-
-    .timeline {
-      flex: 1;
-      max-width: 250px;
-      padding-right: 1rem;
-      height: calc(100vh - 120px);
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    .timeline::-webkit-scrollbar {
-      display: none;
-    }
-
-    .timeline {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    .timeline h2 {
-      color: #c9a96e;
-      font-size: 1.3rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .timeline-item {
-      margin: 1rem 0;
-      cursor: pointer;
-    }
-
-    .timeline-button {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 1rem;
-      background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
-      border: 2px solid #c9a96e;
-      color: #e8e8e8;
-      font-weight: 500;
-      font-size: 0.95rem;
-      width: 100%;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .timeline-button:hover {
-      background: linear-gradient(145deg, #c9a96e, #b8956a);
-      color: #1a1a1a;
-      transform: translateX(5px);
-      box-shadow: 0 4px 15px rgba(201, 169, 110, 0.3);
-    }
-
-    .timeline-button.active {
-      background: linear-gradient(145deg, #c9a96e, #b8956a);
-      color: #1a1a1a;
-      transform: translateX(5px);
-    }
-
-    .content-area {
-      flex: 2;
-      background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
-      border: 1px solid #c9a96e;
-      border-radius: 8px;
-      padding: 3rem;
-      max-height: calc(100vh - 120px);
-      overflow-y: auto;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .content-panel {
-      display: none;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
-    .content-panel.active {
-      display: block;
-      opacity: 1;
-    }
-
-    .content-panel h2 {
-      font-size: 2.2rem;
-      color: #c9a96e;
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      border-bottom: 3px solid #d4af37;
-      padding-bottom: 1rem;
-      font-weight: 300;
-    }
-
-    .content-panel h3 {
-      font-size: 1.4rem;
-      color: #d4af37;
-      margin: 2rem 0 1rem 0;
-      font-weight: 400;
-    }
-
-    .content-panel p {
-      margin-bottom: 1.5rem;
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: #cccccc;
-      text-align: justify;
-    }
-
-    .content-panel img {
-      max-width: 100%;
-      max-height: 400px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin: 2rem 0;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .highlight-box {
-      background: rgba(201, 169, 110, 0.1);
-      border-left: 4px solid #c9a96e;
-      padding: 1.5rem;
-      margin: 2rem 0;
-      border-radius: 0 8px 8px 0;
-    }
-
-    .highlight-box p {
-      margin: 0;
-      font-style: italic;
-      color: #e8e8e8;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin: 2rem 0;
-    }
-
-    .stat-item {
-      background: rgba(201, 169, 110, 0.1);
-      padding: 1.5rem;
-      text-align: center;
-      border-radius: 8px;
-      border: 1px solid rgba(201, 169, 110, 0.3);
-    }
-
-    .stat-number {
-      font-size: 2rem;
-      color: #c9a96e;
-      font-weight: bold;
-      display: block;
-    }
-
-    .stat-label {
-      color: #cccccc;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* Gallery Styles */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 1rem;
-      margin: 2rem 0;
-    }
-
-    .gallery-item {
-      position: relative;
-      cursor: pointer;
-      border-radius: 8px;
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      background: #2a2a2a;
-      aspect-ratio: 4/3;
-    }
-
-    .gallery-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(201, 169, 110, 0.3);
-    }
-
-    .gallery-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: filter 0.3s ease;
-    }
-
-    .gallery-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(201, 169, 110, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .gallery-item:hover .gallery-overlay {
-      opacity: 1;
-    }
-
-    .gallery-icon {
-      font-size: 2rem;
-      color: #1a1a1a;
-    }
-
-    /* Lightbox Styles */
-    .lightbox {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 10000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .lightbox.active {
-      display: flex;
-    }
-
-    .lightbox-content {
-      position: relative;
-      max-width: 90%;
-      max-height: 90%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .lightbox-image {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      border-radius: 8px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    }
-
-    .lightbox-close {
-      position: fixed;
-      top: 2rem;
-      left: 2rem;
-      background: rgba(128, 128, 128, 0.7);
-      border: none;
-      color: #333333;
-      font-size: 1.5rem;
-      padding: 0.5rem;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: all 0.3s ease;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: normal;
-      z-index: 10001;
-    }
-
-    .lightbox-close:hover {
-      background: rgba(160, 160, 160, 0.8);
-      color: #222222;
-    }
-
-    .lightbox-counter {
-      position: fixed;
-      bottom: 3rem;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #c9a96e;
-      background: rgba(26, 26, 26, 0.9);
-      padding: 1rem 2rem;
-      border-radius: 25px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border: 2px solid rgba(201, 169, 110, 0.3);
-      z-index: 10001;
-    }
-
-    /* Scrollbar Styling */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #1a1a1a;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #c9a96e;
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #d4af37;
-    }
-
-    @media (max-width: 1024px) {
-      .main-container {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1rem;
-      }
-
-      .info-panel, .timeline {
-        max-width: 100%;
-        height: auto;
-      }
-
-      .content-area {
-        max-height: none;
-      }
-
-      .gallery-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.8rem;
-      }
-
-      .lightbox-close {
-        width: 35px;
-        height: 35px;
-        font-size: 1.2rem;
-        top: 1rem;
-        left: 1rem;
-      }
-
-      .lightbox-counter {
-        bottom: 1.5rem;
-        padding: 0.8rem 1.5rem;
-        font-size: 1rem;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Design & Museum Dokumentation</title>
+<style>
+* {
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+padding: 0;
+background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+color: #e8e8e8;
+font-family: 'Times New Roman', serif;
+overflow-x: hidden;
+line-height: 1.6;
+}
+
+.header {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+background: rgba(26, 26, 26, 0.95);
+backdrop-filter: blur(10px);
+border-bottom: 2px solid #c9a96e;
+z-index: 1000;
+padding: 1rem 2rem;
+}
+
+.header h1 {
+margin: 0;
+font-size: 1.8rem;
+color: #c9a96e;
+text-align: center;
+font-weight: 300;
+letter-spacing: 2px;
+text-transform: uppercase;
+}
+
+.main-container {
+display: flex;
+margin-top: 80px;
+min-height: calc(100vh - 80px);
+gap: 2rem;
+padding: 2rem;
+width: 100%;
+max-width: 100vw;
+overflow-x: hidden;
+}
+
+.info-panel {
+flex: 1;
+max-width: 300px;
+background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+border: 1px solid #c9a96e;
+border-radius: 8px;
+height: fit-content;
+box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+transition: all 0.3s ease;
+overflow: hidden;
+position: relative;
+}
+
+.info-panel.collapsed {
+max-width: 80px;
+min-width: 80px;
+}
+
+.info-panel.collapsed .info-content {
+display: none;
+}
+
+.info-panel-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1.5rem;
+margin: 0;
+border-bottom: 2px solid #c9a96e;
+margin-bottom: 1.5rem;
+position: relative;
+}
+
+.info-panel.collapsed .info-panel-header {
+padding: 1.5rem 0.5rem;
+margin-bottom: 0;
+border-bottom: none;
+justify-content: center;
+}
+
+.info-panel h2 {
+color: #c9a96e;
+font-size: 1.2rem;
+margin: 0;
+text-transform: uppercase;
+letter-spacing: 1px;
+transition: all 0.3s ease;
+flex-grow: 1;
+padding-right: 1rem;
+}
+
+.info-panel.collapsed h2 {
+opacity: 0;
+transform: translateX(-20px);
+font-size: 0;
+padding-right: 0;
+}
+
+.toggle-btn {
+background: linear-gradient(145deg, #c9a96e, #b8956a);
+border: 3px solid #d4af37;
+color: #1a1a1a;
+width: 45px;
+height: 45px;
+border-radius: 8px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.6rem;
+font-weight: bold;
+transition: all 0.3s ease;
+flex-shrink: 0;
+box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
+position: relative;
+}
+
+.info-panel.collapsed .toggle-btn {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+border-radius: 50%;
+width: 50px;
+height: 50px;
+}
+
+.toggle-btn:hover {
+background: linear-gradient(145deg, #d4af37, #c9a96e);
+border-color: #ffae42;
+transform: scale(1.1);
+box-shadow: 0 6px 20px rgba(201, 169, 110, 0.6);
+}
+
+.info-panel.collapsed .toggle-btn:hover {
+transform: translate(-50%, -50%) scale(1.1);
+}
+
+.toggle-btn:active {
+transform: scale(1.05);
+}
+
+.info-panel.collapsed .toggle-btn:active {
+transform: translate(-50%, -50%) scale(1.05);
+}
+
+.toggle-btn::before {
+content: '';
+position: absolute;
+top: -3px;
+left: -3px;
+right: -3px;
+bottom: -3px;
+background: linear-gradient(45deg, #c9a96e, #d4af37, #ffae42, #c9a96e);
+border-radius: inherit;
+z-index: -1;
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+
+.info-panel.collapsed .toggle-btn::before {
+border-radius: 50%;
+}
+
+.toggle-btn:hover::before {
+opacity: 0.3;
+}
+
+.info-content {
+padding: 0 2rem 2rem 2rem;
+transition: opacity 0.3s ease;
+overflow: hidden;
+}
+
+.info-section {
+margin-bottom: 2rem;
+}
+
+.info-section h3 {
+color: #d4af37;
+font-size: 1.1rem;
+margin-bottom: 0.8rem;
+font-weight: 600;
+}
+
+.info-section p {
+font-size: 0.95rem;
+color: #cccccc;
+margin-bottom: 1rem;
+}
+
+.methodology-list {
+list-style: none;
+padding: 0;
+}
+
+.methodology-list li {
+padding: 0.5rem 0;
+border-left: 3px solid #c9a96e;
+padding-left: 1rem;
+margin-bottom: 0.5rem;
+background: rgba(201, 169, 110, 0.1);
+border-radius: 0 4px 4px 0;
+}
+
+.timeline {
+flex: 1;
+max-width: 250px;
+padding-right: 1rem;
+height: calc(100vh - 120px);
+overflow-y: auto;
+overflow-x: hidden;
+}
+
+.timeline::-webkit-scrollbar {
+display: none;
+}
+
+.timeline {
+-ms-overflow-style: none;
+scrollbar-width: none;
+}
+
+.timeline h2 {
+color: #c9a96e;
+font-size: 1.3rem;
+margin-bottom: 1.5rem;
+text-align: center;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.timeline-item {
+margin: 1rem 0;
+cursor: pointer;
+}
+
+.timeline-button {
+display: flex;
+align-items: center;
+justify-content: flex-start;
+padding: 1rem;
+background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+border: 2px solid #c9a96e;
+color: #e8e8e8;
+font-weight: 500;
+font-size: 0.95rem;
+width: 100%;
+border-radius: 6px;
+transition: all 0.3s ease;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.timeline-button:hover {
+background: linear-gradient(145deg, #c9a96e, #b8956a);
+color: #1a1a1a;
+transform: translateX(5px);
+box-shadow: 0 4px 15px rgba(201, 169, 110, 0.3);
+}
+
+.timeline-button.active {
+background: linear-gradient(145deg, #c9a96e, #b8956a);
+color: #1a1a1a;
+transform: translateX(5px);
+}
+
+.content-area {
+flex: 2;
+background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+border: 1px solid #c9a96e;
+border-radius: 8px;
+padding: 3rem;
+max-height: calc(100vh - 120px);
+overflow-y: auto;
+box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+width: 100%;
+box-sizing: border-box;
+}
+
+.content-panel {
+display: none;
+opacity: 0;
+transition: opacity 0.5s ease;
+width: 100%;
+box-sizing: border-box;
+overflow-wrap: break-word;
+word-wrap: break-word;
+}
+
+.content-panel.active {
+display: block;
+opacity: 1;
+}
+
+.content-panel h2 {
+font-size: 2.2rem;
+color: #c9a96e;
+margin-bottom: 1.5rem;
+text-transform: uppercase;
+letter-spacing: 2px;
+border-bottom: 3px solid #d4af37;
+padding-bottom: 1rem;
+font-weight: 300;
+}
+
+.content-panel h3 {
+font-size: 1.4rem;
+color: #d4af37;
+margin: 2rem 0 1rem 0;
+font-weight: 400;
+}
+
+.content-panel p {
+margin-bottom: 1.5rem;
+font-size: 1.1rem;
+line-height: 1.8;
+color: #cccccc;
+text-align: justify;
+}
+
+.content-panel img {
+max-width: 100%;
+max-height: 400px;
+object-fit: cover;
+border-radius: 8px;
+margin: 2rem 0;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.highlight-box {
+background: rgba(201, 169, 110, 0.1);
+border-left: 4px solid #c9a96e;
+padding: 1.5rem;
+margin: 2rem 0;
+border-radius: 0 8px 8px 0;
+}
+
+.highlight-box p {
+margin: 0;
+font-style: italic;
+color: #e8e8e8;
+}
+
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 1rem;
+margin: 2rem 0;
+}
+
+.stat-item {
+background: rgba(201, 169, 110, 0.1);
+padding: 1.5rem;
+text-align: center;
+border-radius: 8px;
+border: 1px solid rgba(201, 169, 110, 0.3);
+}
+
+.stat-number {
+font-size: 2rem;
+color: #c9a96e;
+font-weight: bold;
+display: block;
+}
+
+.stat-label {
+color: #cccccc;
+font-size: 0.9rem;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+/* Gallery Styles */
+.gallery-grid {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 1rem;
+margin: 2rem 0;
+}
+
+.gallery-item {
+position: relative;
+cursor: pointer;
+border-radius: 8px;
+overflow: hidden;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+background: #2a2a2a;
+aspect-ratio: 4/3;
+}
+
+.gallery-item:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 25px rgba(201, 169, 110, 0.3);
+}
+
+.gallery-image {
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: filter 0.3s ease;
+}
+
+.gallery-overlay {
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(201, 169, 110, 0.8);
+display: flex;
+align-items: center;
+justify-content: center;
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+opacity: 1;
+}
+
+.gallery-icon {
+font-size: 2rem;
+color: #1a1a1a;
+}
+
+.placeholder-gallery {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 1rem;
+margin: 2rem 0;
+}
+
+.placeholder-item {
+background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+border: 2px dashed #c9a96e;
+border-radius: 8px;
+aspect-ratio: 4/3;
+display: flex;
+align-items: center;
+justify-content: center;
+color: #c9a96e;
+font-size: 0.9rem;
+text-align: center;
+padding: 1rem;
+}
+
+/* Lightbox Styles */
+.lightbox {
+  display: none; /* Wird per JS aktiviert */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.lightbox.active {
+display: flex;
+}
+
+.lightbox-content {
+  position: relative;
+  /* Begrenze den Bereich auf z. B. 80% der Viewportbreite und -höhe */
+  max-width: 55vw !important;
+  max-height: 55vh !important;
+  /* Optional: etwas Padding, damit der Rand sichtbar bleibt */
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Das Bild selbst */
+.lightbox-image {
+  /* Nutzt die volle Größe des Containers, ohne ihn zu übersteigen */
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain; /* Sorgt dafür, dass das ganze Bild sichtbar bleibt */
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+position: fixed;
+top: 2rem;
+left: 2rem;
+background: rgba(128, 128, 128, 0.7);
+border: none;
+color: #333333;
+font-size: 1.5rem;
+padding: 0.5rem;
+cursor: pointer;
+border-radius: 4px;
+transition: all 0.3s ease;
+width: 40px;
+height: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: normal;
+z-index: 10001;
+}
+
+.lightbox-close:hover {
+background: rgba(160, 160, 160, 0.8);
+color: #222222;
+}
+
+.lightbox-counter {
+position: fixed;
+bottom: 3rem;
+left: 50%;
+transform: translateX(-50%);
+color: #c9a96e;
+background: rgba(26, 26, 26, 0.9);
+padding: 1rem 2rem;
+border-radius: 25px;
+font-size: 1.2rem;
+font-weight: bold;
+border: 2px solid rgba(201, 169, 110, 0.3);
+z-index: 10001;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+width: 8px;
+}
+
+::-webkit-scrollbar-track {
+background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+background: #c9a96e;
+border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: #d4af37;
+}
+
+@media (max-width: 1024px) {
+.main-container {
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.info-panel, .timeline {
+  max-width: 100%;
+  height: auto;
+}
+
+.content-area {
+  max-height: none;
+  padding: 2rem;
+}
+
+.gallery-grid, .placeholder-gallery {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+
+.lightbox-close {
+  width: 35px;
+  height: 35px;
+  font-size: 1.2rem;
+  top: 1rem;
+  left: 1rem;
+}
+
+.lightbox-counter {
+  bottom: 1.5rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+}
+}
+
+@media (max-width: 768px) {
+.main-container {
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.content-area {
+  padding: 1.5rem;
+}
+
+.content-panel h2 {
+  font-size: 1.8rem;
+}
+
+.content-panel h3 {
+  font-size: 1.2rem;
+}
+
+.content-panel p {
+  font-size: 1rem;
+}
+}
+</style>
 </head>
 <body>
-  <div class="header">
-    <h1>Streifzüge durch Design-(Kultur-)Welten </h1>
+<div class="header">
+<h1>Streifzüge durch Design-(Kultur-)Welten</h1>
+</div>
+
+<div class="main-container">
+<div class="info-panel" id="infoPanel">
+<div class="info-panel-header">
+  <h2>Projektübersicht</h2>
+  <button class="toggle-btn" onclick="toggleInfoPanel()" title="Panel schließen">◀</button>
+</div>
+
+<div class="info-content">
+  <div class="info-section">
+    <h3>Forschungsansatz</h3>
+    <p>Systematische Analyse von Museumsräumen als Gestaltungsexperimente. Jeder Besuch wurde zu einer Detektivarbeit: Wie wirken Farben, Licht und Raumaufteilung auf unser Erleben?</p>
   </div>
 
-  <div class="main-container">
-    <div class="info-panel" id="infoPanel">
-      <div class="info-panel-header">
-        <h2>Projektübersicht</h2>
-        <button class="toggle-btn" onclick="toggleInfoPanel()" title="Panel schließen">◀</button>
-      </div>
-      
-      <div class="info-content">
-        <div class="info-section">
-          <h3>Forschungsansatz</h3>
-          <p>Diese Dokumentation analysiert die Evolution des Designs im Kontext der Museumskultur von 1900 bis heute.</p>
-          
-          <ul class="methodology-list">
-            <li>Historische Analyse</li>
-            <li>Vergleichende Studien</li>
-            <li>Digitale Archivierung</li>
-            <li>Kulturelle Kontextualisierung</li>
-          </ul>
-        </div>
+  <div class="info-section">
+    <h3>Zentrale Fragen</h3>
+    <ul class="methodology-list">
+      <li><strong>Raum & Atmosphäre:</strong> Wie schaffen Museen bestimmte Stimmungen?</li>
+      <li><strong>Text & Vermittlung:</strong> Welche Macht haben Wandtexte über unsere Interpretation?</li>
+      <li><strong>Zielgruppen:</strong> Für wen wird gestaltet und wie zeigt sich das?</li>
+      <li><strong>Innovation:</strong> Welche neuen Vermittlungsformen entstehen?</li>
+      <li><strong>Kritik:</strong> Was funktioniert und was könnte besser werden?</li>
+    </ul>
+  </div>
 
-        <div class="info-section">
-          <h3>Zielsetzung</h3>
-          <p>Untersuchung der Wechselwirkungen zwischen gesellschaftlichen Entwicklungen und Designtrends in Museumsräumen.</p>
-        </div>
+  <div class="info-section">
+    <h3>Methodik</h3>
+    <p>Direkter Museumsbesuch mit systematischer Dokumentation, Fotografie und kritischer Reflexion. Jedes Museum wurde als eigenständiges Designexperiment betrachtet und analysiert.</p>
+  </div>
 
-        <div class="info-section">
-          <h3>Methodik</h3>
-          <p>Interdisziplinäre Herangehensweise unter Berücksichtigung kunsthistorischer, soziologischer und technologischer Aspekte.</p>
-        </div>
-      </div>
+  <div class="info-section">
+    <h3>Für Kreative</h3>
+    <p>Dieses Projekt ist eine Inspirationsquelle für Designer, Architekten und alle, die verstehen wollen, wie Räume emotional wirken und Geschichten erzählen.</p>
+  </div>
+</div>
+</div>
+
+<div class="timeline">
+<h2>Navigation</h2>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('einleitung')">Einleitung</div></div>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('fotografie')">Museum für Fotografie</div></div>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('1900')">C/O Berlin Museum</div></div>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('1920')">Ein Dorf / was zwischen uns steht</div></div>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('bruecke')">Brücke Museum</div></div>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('broehan')">Bröhan Museum</div></div>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('liebermann')">Liebermann Villa</div></div>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('kunstgewerbe')">Kunstgewerbe Museum</div></div>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('urban')">Urban Nation Museum</div></div>
+<div class="timeline-item"><div class="timeline-button" onclick="showContent('fazit')">Fazit & Erkenntnisse</div></div>
+</div>
+
+<div class="content-area">
+<div class="content-panel active" id="content-einleitung">
+  <h2>Einleitung</h2>
+  <p>Dieses Projekt entstand aus der Frage heraus: Wie wirken Museen eigentlich auf uns? Was passiert, wenn wir einen Ausstellungsraum betreten - und warum? In einer Zeit, in der wir täglich von visuellen Reizen überflutet werden, haben wir uns auf eine bewusste Entdeckungsreise durch Berlins Museumslandschaft begeben, um die unsichtbaren Mechanismen der Kulturvermittlung zu entschlüsseln.</p>
+  
+  <h3>Was wir gemacht haben</h3>
+  <p>Über mehrere Monate hinweg haben wir neun sehr unterschiedliche Museen und Ausstellungen besucht - vom klassischen Brücke Museum bis zum experimentellen Urban Nation Museum. Dabei ging es nicht um Kunstgeschichte im traditionellen Sinne, sondern um eine systematische Analyse der Gestaltungssprache: Wie werden Räume inszeniert? Welche Emotionen erzeugen Farben und Licht? Wie beeinflussen Texte unser Verständnis? Warum hängt ein Bild genau hier und nicht dort?</p>
+  
+  <h3>Der Blick hinter die Kulissen</h3>
+  <p>Jeder Museumsbesuch wurde zu einer Detektivarbeit. Wir haben dokumentiert, fotografiert, hinterfragt und analysiert. Was zunächst wie zufällige Gestaltungsentscheidungen aussah, entpuppte sich als durchdachte Strategien der Wissensvermittlung und emotionalen Steuerung. Jeder Raum erzählt eine Geschichte - aber wer bestimmt, wie diese Geschichte erzählt wird?</p>
+  
+  <div class="highlight-box">
+    <p>"Ein Museum ist nie neutral. Jede Wandfarbe, jede Textposition, jede Beleuchtung ist eine bewusste Entscheidung, die unser Erleben und unsere Interpretation beeinflusst."</p>
+  </div>
+  
+  <h3>Warum das wichtig ist</h3>
+  <p>In einer zunehmend visuell geprägten Welt ist es entscheidend zu verstehen, wie Räume und Inszenierungen auf uns wirken. Die Erkenntnisse aus der Museumsanalyse lassen sich direkt auf andere Bereiche übertragen: Retail Design, Ausstellungsgestaltung, digitale Interfaces oder auch die Gestaltung von Arbeitsräumen. Museen sind Laboratorien für die Zukunft der Erfahrungsgestaltung.</p>
+  
+  <h3>Für kreative Köpfe</h3>
+  <p>Dieses Projekt ist besonders wertvoll für Designer, Architekten, Kuratoren und alle kreativen Menschen, die verstehen wollen, wie Räume und Objekte emotional wirken. Die dokumentierten Strategien bieten eine Fundgrube an Inspiration für eigene Projekte - von der Farbgestaltung bis zur narrativen Strukturierung von Inhalten.</p>
+  
+  <div class="stats-grid">
+    <div class="stat-item">
+      <span class="stat-number">8</span>
+      <span class="stat-label">Museen analysiert</span>
     </div>
-
-    <div class="timeline">
-      <h2>Navigation</h2>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('einleitung')">Einleitung</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('fotografie')">Museum für Fotografie</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('1900')">1900-1920</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('1920')">1920-1940</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('1940')">1940-1960</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('1960')">1960-1980</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('1980')">1980-2000</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('2000')">2000-2020</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('2020')">2020-Heute</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('objekt1')">Fallstudie I</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('objekt2')">Fallstudie II</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('objekt3')">Fallstudie III</div></div>
-      <div class="timeline-item"><div class="timeline-button" onclick="showContent('fazit')">Fazit</div></div>
+    <div class="stat-item">
+      <span class="stat-number">200+</span>
+      <span class="stat-label">Fotos dokumentiert</span>
     </div>
+    <div class="stat-item">
+      <span class="stat-number">∞</span>
+      <span class="stat-label">Inspiration für Kreative</span>
+    </div>
+  </div>
+</div>
 
-    <div class="content-area">
-      <div class="content-panel active" id="content-einleitung">
-        <h2>Einleitung</h2>
-        <p>Diese wissenschaftliche Dokumentation untersucht die Entwicklung des Designs im musealen Kontext über mehr als ein Jahrhundert. Die Analyse fokussiert sich auf die Transformation von Ausstellungskonzepten, kuratorischen Ansätzen und der Integration technologischer Innovationen in die Museumspraxis.</p>
-        
-        <div class="highlight-box">
-          <p>"Das Museum als kultureller Raum spiegelt nicht nur die Vergangenheit wider, sondern formt aktiv unser Verständnis von Geschichte, Kunst und Gesellschaft."</p>
-        </div>
-        
-        <h3>Forschungsfragen</h3>
-        <p>Wie haben sich Designprinzipien in Museen entwickelt? Welche gesellschaftlichen Faktoren beeinflussten diese Veränderungen? Inwiefern prägt die digitale Revolution die zeitgenössische Museumslandschaft?</p>
-        
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="stat-number">120+</span>
-            <span class="stat-label">Jahre Designgeschichte</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">8</span>
-            <span class="stat-label">Epochen analysiert</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">50+</span>
-            <span class="stat-label">Museen untersucht</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="content-panel" id="content-fotografie">
-        <h2>Museum für Fotografie</h2>
-        <p>Detaillierte Analyse des Museums für Fotografie mit Fokus auf Ausstellungsgestaltung, Zielgruppenansprache und innovative Präsentationstechniken. Die Untersuchung erfolgte durch direkten Museumsbesuch und systematische Bewertung verschiedener Gestaltungsaspekte.</p>
-        
-        <h3>Zielgruppe & Zugänglichkeit</h3>
-        <p>Das Museum richtet sich primär an Besucher ab 16 Jahren mit besonderem Interesse an Mode und Fashion-Fotografie. Barrierefreiheit wird berücksichtigt. Vorkenntnisse sind nicht zwingend erforderlich - die Bilder können auch ohne Hintergrundwissen bewundert werden, wobei fotografisches Fachwissen die Wahrnehmung der Experimentfreudigkeit und des Unikat-Charakters jedes Bildes deutlich verstärkt.</p>
-        
-        <h3>Inhaltsvermittlung & Kuratierung</h3>
-        <p>Die Ausstellung vermittelt stark die experimentelle Herangehensweise der Fotografie und kontextualisiert historische Entwicklungen. Besonders gelungen ist die chronologische Anordnung: Von 60er-Jahre-Fotografien zu modernen Arbeiten entsteht ein eindrucksvoller Kontrast, der die Entwicklung der Fotografie sichtbar macht.</p>
-        
-        <div class="highlight-box">
-          <p>"Polaroid-Fotos sind der Impressionismus der Fotografie: sie erfassen flüchtige Momente mit ikonischem, verblasstem Charme. Digitale Kameras hingegen stehen für den Realismus, da sie oft mehrere, detailreiche Aufnahmen ermöglichen." – Leon Pauker</p>
-        </div>
-        
-        <h3>Gestalterische Innovation</h3>
-        <p>Herausragend ist die adaptive Raumgestaltung: Jeder Ausstellungsbereich wird individuell an die gezeigten Fotografien angepasst. Sommerliche Bilder werden mit heller Beleuchtung und warmen Wandfarben kombiniert, wodurch eine synergetische Wirkung zwischen Raum und Exponat entsteht. Licht und Farbe werden als aktive Gestaltungsmittel eingesetzt.</p>
-        
-        <h3>Bildergalerie</h3>
-        <div class="image-gallery">
-          <div class="gallery-grid">
-            <div class="gallery-item" onclick="openLightbox(0)">
-              <img src="Fotos/Fotogalerie1.jpeg" alt="Museum Foto 1" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-            <div class="gallery-item" onclick="openLightbox(1)">
-              <img src="Fotos/Fotogalerie2.jpeg" alt="Museum Foto 2" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-            <div class="gallery-item" onclick="openLightbox(2)">
-              <img src="Fotos/Fotogalerie3.jpeg" alt="Museum Foto 3" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-            <div class="gallery-item" onclick="openLightbox(3)">
-              <img src="Fotos/Fotogalerie4.jpeg" alt="Museum Foto 4" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-            <div class="gallery-item" onclick="openLightbox(4)">
-              <img src="Fotos/Fotogalerie5.jpeg" alt="Museum Foto 5" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-            <div class="gallery-item" onclick="openLightbox(5)">
-              <img src="Fotos/Fotogalerie6.jpeg" alt="Museum Foto 6" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-            <div class="gallery-item" onclick="openLightbox(6)">
-              <img src="Fotos/Fotogalerie7.jpeg" alt="Museum Foto 7" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-            <div class="gallery-item" onclick="openLightbox(7)">
-              <img src="Fotos/Fotogalerie8.jpeg" alt="Museum Foto 8" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-            <div class="gallery-item" onclick="openLightbox(8)">
-              <img src="Fotos/Fotogalerie9.jpeg" alt="Museum Foto 9" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-            <div class="gallery-item" onclick="openLightbox(9)">
-              <img src="Fotos/Fotogalerie10.jpeg" alt="Museum Foto 10" class="gallery-image">
-              <div class="gallery-overlay">
-                <span class="gallery-icon">🔍</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <h3>Kritische Bewertung & Verbesserungsvorschläge</h3>
-        <p><strong>Positive Aspekte:</strong> Entwicklung wird ohne Text verständlich, Fotos werden durch Raum, Farbe und Licht optimal unterstützt, hohe Informationsdichte bei guter Verständlichkeit.</p>
-        
-        <p><strong>Verbesserungspotential:</strong></p>
-        <ul class="methodology-list">
-          <li><strong>Besucherführung:</strong> Klarere Hinweise zum Fotografierverbot mit Blitzlicht</li>
-          <li><strong>Objektpräsentation:</strong> Mehr Abwechslung bei ähnlichen Fotografien nebeneinander</li>
-          <li><strong>Beleuchtung:</strong> Optimierung der Lichtführung, da teilweise Reflexionen die Bildbetrachtung stören</li>
-          <li><strong>Texte:</strong> Kürzere, inspirierendere Texte statt langer Erklärungen</li>
-        </ul>
-        
-        <h3>Gesellschaftlicher Kontext</h3>
-        <p>Besonders bei historischen Aktfotografien zeigt sich die Notwendigkeit zeitgemäßer Kontextualisierung. Statt reiner Kritik an vergangenen Darstellungsformen sollten inspirierende Texte die damaligen Umstände erklären und gleichzeitig heutige Perspektiven würdigen.</p>
-        
-        <div class="highlight-box">
-          <p>Das Museum für Fotografie demonstriert eindrucksvoll, wie adaptive Raumgestaltung die Wirkung von Exponaten verstärken kann - ein Modell für zeitgemäße Museumskonzeption.</p>
+<div class="content-panel" id="content-fotografie">
+  <h2>Museum für Fotografie</h2>
+  <p>Detaillierte Analyse des Museums für Fotografie mit Fokus auf Ausstellungsgestaltung, Zielgruppenansprache und innovative Präsentationstechniken. Die Untersuchung erfolgte durch direkten Museumsbesuch und systematische Bewertung verschiedener Gestaltungsaspekte.</p>
+  
+  <h3>Zielgruppe & Zugänglichkeit</h3>
+  <p>Das Museum richtet sich primär an Besucher ab 16 Jahren mit besonderem Interesse an Mode und Fashion-Fotografie. Barrierefreiheit wird berücksichtigt. Vorkenntnisse sind nicht zwingend erforderlich - die Bilder können auch ohne Hintergrundwissen bewundert werden, wobei fotografisches Fachwissen die Wahrnehmung der Experimentfreudigkeit und des Unikat-Charakters jedes Bildes deutlich verstärkt.</p>
+  
+  <h3>Inhaltsvermittlung & Kuratierung</h3>
+  <p>Die Ausstellung vermittelt stark die experimentelle Herangehensweise der Fotografie und kontextualisiert historische Entwicklungen. Besonders gelungen ist die chronologische Anordnung: Von 60er-Jahre-Fotografien zu modernen Arbeiten entsteht ein eindrucksvoller Kontrast, der die Entwicklung der Fotografie sichtbar macht.</p>
+  
+  <div class="highlight-box">
+    <p>"Polaroid-Fotos sind der Impressionismus der Fotografie: sie erfassen flüchtige Momente mit ikonischem, verblasstem Charme. Digitale Kameras hingegen stehen für den Realismus, da sie oft mehrere, detailreiche Aufnahmen ermöglichen." – Leon Pauker</p>
+  </div>
+  
+  <h3>Gestalterische Innovation</h3>
+  <p>Herausragend ist die adaptive Raumgestaltung: Jeder Ausstellungsbereich wird individuell an die gezeigten Fotografien angepasst. Sommerliche Bilder werden mit heller Beleuchtung und warmen Wandfarben kombiniert, wodurch eine synergetische Wirkung zwischen Raum und Exponat entsteht. Licht und Farbe werden als aktive Gestaltungsmittel eingesetzt.</p>
+  
+  <h3>Bildergalerie</h3>
+  <div class="image-gallery">
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox(0)">
+        <img src="Fotos/Fotogalerie1.jpeg" alt="Museum Foto 1" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
         </div>
       </div>
-
-      <div class="content-panel" id="content-1900">
-        <h2>1900-1920: Industrialisierung & Jugendstil</h2>
-        <p>Die Jahrhundertwende markiert den Beginn der modernen Museumsarchitektur. Geprägt von der Industrialisierung entstehen monumentale Museumsbauten, die Bildung und kulturelle Erhabenheit vermitteln sollen.</p>
-        
-        <h3>Charakteristische Merkmale</h3>
-        <p>Jugendstil-Einflüsse dominieren die Innengestaltung. Ornamentale Elemente, geschwungene Linien und naturnahe Motive prägen die Ausstellungsräume. Erste technische Innovationen wie elektrische Beleuchtung revolutionieren die Präsentation von Exponaten.</p>
-        
-        <div class="highlight-box">
-          <p>Das Museum wird zum "Tempel der Bildung" - eine sakrale Atmosphäre soll Ehrfurcht vor Kunst und Kultur vermitteln.</p>
-        </div>
-        
-        <h3>Gesellschaftlicher Kontext</h3>
-        <p>Demokratisierung der Bildung und wachsendes Bürgertum schaffen neue Zielgruppen. Museen entwickeln sich von elitären Sammlungen zu öffentlichen Bildungseinrichtungen.</p>
-      </div>
-
-      <div class="content-panel" id="content-1920">
-        <h2>1920-1940: Moderne & Avantgarde</h2>
-        <p>Die Zwischenkriegszeit bringt radikale Veränderungen in der Museumsgestaltung. Das Bauhaus und andere avantgardistische Bewegungen propagieren Klarheit, Funktionalität und Reduktion.</p>
-        
-        <h3>Designrevolution</h3>
-        <p>Weg von der Ornamentik hin zu klaren, geometrischen Formen. "Form follows function" wird zum Leitmotiv. Neue Materialien wie Stahl und Glas ermöglichen innovative Raumkonzepte.</p>
-        
-        <h3>Politische Einflüsse</h3>
-        <p>Totalitäre Regime instrumentalisieren Museen für Propaganda. Gleichzeitig entsteht Widerstand durch progressive Kuratoren, die moderne Kunst trotz politischen Drucks präsentieren.</p>
-        
-        <div class="highlight-box">
-          <p>Die "Weiße Wand" etabliert sich als neutraler Hintergrund - ein Paradigmenwechsel, der bis heute nachwirkt.</p>
+      <div class="gallery-item" onclick="openLightbox(1)">
+        <img src="Fotos/Fotogalerie3.jpeg" alt="Museum Foto 3" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
         </div>
       </div>
-
-      <div class="content-panel" id="content-1940">
-        <h2>1940-1960: Wiederaufbau & Konservierung</h2>
-        <p>Die Nachkriegszeit ist geprägt vom Wiederaufbau zerstörter Museen und der Rückbesinnung auf traditionelle Werte. Gleichzeitig entstehen neue Konzepte der Kunstvermittlung.</p>
-        
-        <h3>Rekonstruktion und Neubeginn</h3>
-        <p>Viele bedeutende Museen müssen völlig neu konzipiert werden. Dies bietet die Chance für innovative Ansätze, wird aber oft für konservative Lösungen genutzt.</p>
-        
-        <h3>Demokratisierung der Kultur</h3>
-        <p>Museen sollen zur gesellschaftlichen Bildung beitragen. Neue pädagogische Konzepte entstehen, um Kunst breiteren Bevölkerungsschichten zugänglich zu machen.</p>
-      </div>
-
-      <div class="content-panel" id="content-1960">
-        <h2>1960-1980: Popkultur & Erlebnisgesellschaft</h2>
-        <p>Die 60er Jahre revolutionieren die Museumslandschaft. Pop Art, gesellschaftlicher Wandel und neue Medien verändern fundamental, wie Kultur präsentiert und erlebt wird.</p>
-        
-        <h3>Farbe und Bewegung</h3>
-        <p>Das sterile Weiß weicht bunten, dynamischen Gestaltungskonzepten. Museen werden zu Erlebnisräumen, die alle Sinne ansprechen sollen.</p>
-        
-        <h3>Partizipation und Interaktion</h3>
-        <p>Besucher sollen nicht mehr passive Betrachter sein, sondern aktiv teilnehmen. Erste interaktive Elemente und Hands-on-Bereiche entstehen.</p>
-        
-        <div class="highlight-box">
-          <p>"Das Museum muss lebendig werden" - so lautet das Credo einer Generation, die Kultur neu definiert.</p>
+      <div class="gallery-item" onclick="openLightbox(2)">
+        <img src="Fotos/Fotogalerie4.jpeg" alt="Museum Foto 4" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
         </div>
       </div>
-
-      <div class="content-panel" id="content-1980">
-        <h2>1980-2000: Postmoderne & Diversität</h2>
-        <p>Die Postmoderne bringt eine neue Komplexität in die Museumsgestaltung. Eklektizismus, kulturelle Vielfalt und der Einzug der Computertechnologie prägen diese Epoche.</p>
-        
-        <h3>Stilpluralismus</h3>
-        <p>Verschiedene Designsprachen koexistieren friedlich. Historische Referenzen werden spielerisch mit zeitgenössischen Elementen kombiniert.</p>
-        
-        <h3>Technologische Integration</h3>
-        <p>Erste Computer und audiovisuelle Medien halten Einzug in die Museen. Dies eröffnet völlig neue Möglichkeiten der Wissensvermittlung und Interaktion.</p>
-        
-        <h3>Globalisierung der Kultur</h3>
-        <p>Außereuropäische Kunst und Kultur gewinnen an Bedeutung. Museen müssen ihre eurozentristische Perspektive überdenken und erweitern.</p>
-      </div>
-
-      <div class="content-panel" id="content-2000">
-        <h2>2000-2020: Digitale Revolution</h2>
-        <p>Das neue Jahrtausend steht im Zeichen der digitalen Transformation. Internet, Smartphones und soziale Medien verändern grundlegend, wie Menschen mit Kultur interagieren.</p>
-        
-        <h3>Multimediale Erfahrungen</h3>
-        <p>Audioguides werden zu komplexen multimedialen Systemen. Augmented Reality und Virtual Reality schaffen immersive Erlebnisse, die die physische Realität erweitern.</p>
-        
-        <h3>Social Media & Partizipation</h3>
-        <p>Museen müssen lernen, mit sozialen Medien umzugehen. Besucher werden zu Content-Produzenten und beeinflussen die öffentliche Wahrnehmung von Ausstellungen.</p>
-        
-        <div class="highlight-box">
-          <p>Das Museum wird zur "Drehscheibe kultureller Kommunikation" - vernetzt, interaktiv und global zugänglich.</p>
-        </div>
-        
-        <h3>Architektonische Meisterwerke</h3>
-        <p>Spektakuläre Museumsbauten von Star-Architekten werden selbst zu Kunstobjekten und touristischen Attraktionen.</p>
-      </div>
-
-      <div class="content-panel" id="content-2020">
-        <h2>2020-Heute: Pandemie & Neue Normalität</h2>
-        <p>Die COVID-19-Pandemie forciert eine dramatische Beschleunigung der Digitalisierung. Virtuelle Museumsbesuche und Online-Ausstellungen werden zur Normalität.</p>
-        
-        <h3>Virtuelle Welten</h3>
-        <p>Hochauflösende 3D-Scans, Virtual Reality Tours und interaktive Online-Plattformen ermöglichen Museumserlebnisse von zu Hause aus.</p>
-        
-        <h3>Hybride Ansätze</h3>
-        <p>Die Zukunft liegt in der intelligenten Verknüpfung von physischen und digitalen Erfahrungen. Museen entwickeln sich zu hybriden Kulturräumen.</p>
-        
-        <h3>Nachhaltigkeit & Inklusion</h3>
-        <p>Klimawandel und gesellschaftliche Gerechtigkeit werden zu zentralen Themen. Museen überdenken ihre Rolle als gesellschaftliche Akteure.</p>
-        
-        <div class="highlight-box">
-          <p>Das Museum der Zukunft ist flexibel, inklusiv und digital vernetzt - aber behält seine Kernfunktion als Ort der Begegnung mit authentischen Objekten.</p>
+      <div class="gallery-item" onclick="openLightbox(3)">
+        <img src="Fotos/Fotogalerie5.jpeg" alt="Museum Foto 5" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
         </div>
       </div>
-
-      <div class="content-panel" id="content-objekt1">
-        <h2>Fallstudie I: Klassische Skulptur</h2>
-        <p>Analyse der Präsentationsformen einer antiken Skulptur über verschiedene Epochen hinweg. Diese Fallstudie verdeutlicht, wie sich die Kontextualisierung und Inszenierung von Kunst im Laufe der Zeit verändert hat.</p>
-        
-        <h3>Entwicklung der Präsentation</h3>
-        <p>Von der monumentalen Aufstellung auf hohen Sockeln zu modernen, augennahen Präsentationen. Der Wandel spiegelt veränderte Vorstellungen von Kunst und Zugänglichkeit wider.</p>
-        
-        <h3>Technologische Unterstützung</h3>
-        <p>Moderne Beleuchtungstechnik, Klimakontrolle und Sicherheitssysteme ermöglichen heute eine optimale Konservierung bei maximaler Zugänglichkeit.</p>
-        
-        <div class="highlight-box">
-          <p>Die gleiche Skulptur erzählt je nach Präsentationskontext völlig unterschiedliche Geschichten.</p>
+      <div class="gallery-item" onclick="openLightbox(4)">
+        <img src="Fotos/Fotogalerie6.jpeg" alt="Museum Foto 6" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
         </div>
       </div>
-
-      <div class="content-panel" id="content-objekt2">
-        <h2>Fallstudie II: Moderne Malerei</h2>
-        <p>Untersuchung der Hängung und Kontextualisierung eines abstrakten Gemäldes aus der Mitte des 20. Jahrhunderts. Besonderer Fokus auf die Entwicklung der "White Cube"-Ästhetik.</p>
-        
-        <h3>Räumliche Inszenierung</h3>
-        <p>Die Evolution von überfüllten Hängungen zu minimalistischen Präsentationen zeigt den Wandel im Kunstverständnis und in der Rezeptionsästhetik.</p>
-        
-        <h3>Digitale Vermittlung</h3>
-        <p>QR-Codes, Augmented Reality und interaktive Displays erweitern heute das Verständnis abstrakter Kunst durch zusätzliche Informationsebenen.</p>
-      </div>
-
-      <div class="content-panel" id="content-objekt3">
-        <h2>Fallstudie III: Historisches Artefakt</h2>
-        <p>Dokumentation der Ausstellungsgeschichte eines bedeutenden historischen Objekts. Die Studie zeigt, wie sich die wissenschaftliche Einordnung und öffentliche Interpretation über die Jahrzehnte gewandelt hat.</p>
-        
-        <h3>Wissenschaftlicher Erkenntnisgewinn</h3>
-        <p>Neue Forschungsmethoden und archäologische Erkenntnisse führen zu veränderten Interpretationen und entsprechend angepassten Präsentationsformen.</p>
-        
-        <h3>Kulturelle Sensibilität</h3>
-        <p>Wachsendes Bewusstsein für koloniale Vergangenheit und kulturelle Aneignung verändert den Umgang mit ethnologischen Objekten grundlegend.</p>
-      </div>
-
-      <div class="content-panel" id="content-fazit">
-        <h2>Fazit & Ausblick</h2>
-        <p>Die Untersuchung zeigt eine kontinuierliche Evolution der Museumsgestaltung, die eng mit gesellschaftlichen, technologischen und kulturellen Entwicklungen verknüpft ist.</p>
-        
-        <h3>Zentrale Erkenntnisse</h3>
-        <p>Museen sind nicht neutrale Präsentationsräume, sondern aktive Gestalter kultureller Bedeutung. Ihre Designsprache beeinflusst maßgeblich, wie Besucher Kunst und Kultur wahrnehmen und interpretieren.</p>
-        
-        <h3>Zukunftsperspektiven</h3>
-        <p>Die Integration digitaler Technologien wird weiter voranschreiten, ohne die fundamentale Bedeutung authentischer Objekte und physischer Begegnungsräume zu ersetzen.</p>
-        
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="stat-number">360°</span>
-            <span class="stat-label">Vollständige Transformation</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">∞</span>
-            <span class="stat-label">Zukunftspotential</span>
-          </div>
+      <div class="gallery-item" onclick="openLightbox(5)">
+        <img src="Fotos/Fotogalerie7.jpeg" alt="Museum Foto 7" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
         </div>
-        
-        <div class="highlight-box">
-          <p>"Das Museum der Zukunft wird ein Ort sein, an dem Vergangenheit, Gegenwart und Zukunft in einem kontinuierlichen Dialog stehen - ermöglicht durch Design, Technologie und menschliche Neugier."</p>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(6)">
+        <img src="Fotos/Fotogalerie8.jpeg" alt="Museum Foto 8" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(7)">
+        <img src="Fotos/Fotogalerie9.jpeg" alt="Museum Foto 9" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(8)">
+        <img src="Fotos/Fotogalerie9.jpeg" alt="Museum Foto 9" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(9)">
+        <img src="Fotos/Fotogalerie10.jpeg" alt="Museum Foto 10" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
         </div>
       </div>
     </div>
   </div>
+  
+  <h3>Kritische Bewertung & Verbesserungsvorschläge</h3>
+  <p><strong>Positive Aspekte:</strong> Entwicklung wird ohne Text verständlich, Fotos werden durch Raum, Farbe und Licht optimal unterstützt, hohe Informationsdichte bei guter Verständlichkeit.</p>
+  
+  <p><strong>Verbesserungspotential:</strong></p>
+  <ul class="methodology-list">
+    <li><strong>Textgestaltung:</strong> "Paar Texte waren sehr schlecht gestaltet, so dass man es gar nicht lesen kann ohne sich zu verlesen"</li>
+    <li><strong>Typografie:</strong> Bessere Lesbarkeit durch optimierte Schriftgestaltung und Kontraste</li>
+    <li><strong>Textlayout:</strong> Verbesserte Positionierung und Strukturierung der schriftlichen Informationen</li>
+  </ul>
+  
+  <div class="highlight-box">
+    <p>Das Museum für Fotografie demonstriert eindrucksvoll, wie adaptive Raumgestaltung die Wirkung von Exponaten verstärken kann - ein Modell für zeitgemäße Museumskonzeption.</p>
+  </div>
+</div>
 
-  <!-- Lightbox for Image Gallery -->
-  <div class="lightbox" id="lightbox">
-    <div class="lightbox-content">
-      <img class="lightbox-image" id="lightboxImage" src="" alt="">
-      <button class="lightbox-close" onclick="closeLightbox()">×</button>
-      <div class="lightbox-counter" id="lightboxCounter">1 / 10</div>
+<div class="content-panel" id="content-1900">
+  <h2>C/O Berlin Museum</h2>
+  <p>Detaillierte Analyse des C/O Berlin Museums mit Fokus auf narrative Gestaltung, kulturelle Diversität und multimediale Vermittlungsstrategien. Die Untersuchung erfolgte durch direkten Museumsbesuch mit systematischer Bewertung der Ausstellungskonzeption und Besuchererfahrung.</p>
+  
+  <h3>Narrative Struktur & Thematische Umsetzung</h3>
+  <p>Die Ausstellung verfolgt einen dramatischen Erzählansatz, der durch schwaches Licht und dunkle Wandfarben verstärkt wird. Besonders hervorzuheben ist die innovative Gegenüberstellung afrikanischer und europäischer Fotografen, die neue Perspektiven auf koloniale Geschichte und zeitgenössische Kunst eröffnet.</p>
+  
+  <h3>Zielgruppe & Zugänglichkeit</h3>
+  <p>Das Museum richtet sich primär an Erwachsene mit Lebenserfahrung, da viele Themen biografische Bezüge voraussetzen. Kinder können ebenfalls profitieren, benötigen jedoch Grundkenntnisse über Kolonialismus und historische Zusammenhänge. Die kritische Auseinandersetzung mit gesellschaftlichen Themen steht im Vordergrund.</p>
+  
+  <h3>Innovative Gestaltungskonzepte</h3>
+  <p>Herausragend ist die adaptive Raumumgebung: Musik und Licht reagieren auf das Verhalten der Besucher. In Räumen mit Musik entstehen Gespräche, während ruhige und melancholische Bereiche zu stiller Kontemplation einladen. Die Rahmen wurden individuell an die Exponate angepasst, wodurch eine harmonische Gesamtwirkung entsteht.</p>
+  
+  <div class="highlight-box">
+    <p>"Die Ausstellung schafft es, durch geschickte Inszenierung von Licht, Musik und Raum eine emotionale Bandbreite von Liebe bis Trauer zu vermitteln - ein Beispiel für zeitgemäße multimediale Museumsgestaltung."</p>
+  </div>
+  
+  <h3>Multimediale Vermittlung</h3>
+  <p>Besonders gelungen ist der Einsatz unterschiedlicher Medien: Videos erwecken starke Emotionen, Kopfhörer ermöglichen individuelle Hörerfahrungen, und die Kombination kleiner und großer Bilder schafft thematische Abwechslung. Die Inklusivität wird durch die Ansprache verschiedener Sinne gewährleistet.</p>
+  
+  <h3>Bildergalerie C/O Berlin</h3>
+  <div class="image-gallery">
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox('co', 0)">
+        <img src="Fotos/CO1.jpg" alt="C/O Berlin Foto 1" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('co', 1)">
+        <img src="Fotos/CO2.jpg" alt="C/O Berlin Foto 2" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('co', 2)">
+        <img src="Fotos/CO3.jpg" alt="C/O Berlin Foto 3" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('co', 3)">
+        <img src="Fotos/CO4.jpg" alt="C/O Berlin Foto 4" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('co', 4)">
+        <img src="Fotos/CO5.jpg" alt="C/O Berlin Foto 5" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('co', 5)">
+        <img src="Fotos/CO6.jpg" alt="C/O Berlin Foto 6" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('co', 6)">
+        <img src="Fotos/CO7.jpg" alt="C/O Berlin Foto 7" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('co', 7)">
+        <img src="Fotos/CO8.jpeg" alt="C/O Berlin Foto 8" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('co', 8)">
+        <img src="Fotos/CO9.jpg" alt="C/O Berlin Foto 9" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('co', 9)">
+        <img src="Fotos/CO10.jpg" alt="C/O Berlin Foto 10" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <h3>Kritische Bewertung & Verbesserungsvorschläge</h3>
+  <p><strong>Positive Aspekte:</strong> Effektive Nutzung multipler Gestaltungselemente, konstante Spannungserhaltung durch thematische Abwechslung, innovative Verbindung von afrikanischen und europäischen Perspektiven, adaptive Raumumgebung.</p>
+  
+  <p><strong>Verbesserungspotential:</strong></p>
+  <ul class="methodology-list">
+    <li><strong>Besucherführung:</strong> Fehlende klare Route führt zu Orientierungsproblemen - Besucher gelangen zu früh in den letzten Raum</li>
+    <li><strong>Raumorganisation:</strong> Nummerierung der Räume würde Besuchern helfen, ihre Position und den Fortschritt der Ausstellung zu verstehen</li>
+    <li><strong>Beleuchtung:</strong> Einzelne Lichtsetzungen sind problematisch - unklar, ob intentional oder technisch bedingt</li>
+    <li><strong>Texte:</strong> Kürzere Texte würden die Lesezeit reduzieren und mehr Fokus auf die visuellen Exponate legen</li>
+  </ul>
+  
+  <h3>Kulturelle Sensibilität & Diversität</h3>
+  <p>Die Ausstellung zeigt vorbildlich, wie koloniale Geschichte und zeitgenössische Kunst in einen kritischen Dialog gebracht werden können. Die Gegenüberstellung verschiedener kultureller Perspektiven ohne Hierarchisierung ist ein wichtiger Beitrag zur Dekolonisierung der Museumslandschaft.</p>
+  
+  <div class="highlight-box">
+    <p>C/O Berlin demonstriert eindrucksvoll, wie multimediale Elemente und adaptive Raumgestaltung eine emotionale und intellektuelle Auseinandersetzung mit komplexen gesellschaftlichen Themen ermöglichen können.</p>
+  </div>
+</div>
+
+<div class="content-panel" id="content-1920">
+  <h2>Ein Dorf / was zwischen uns steht</h2>
+  <p>Detaillierte Analyse der Ausstellung "Ein Dorf / was zwischen uns steht" mit Fokus auf zeitgenössische Fotografie, Raumgestaltung und narrative Vermittlungsstrategien. Die Untersuchung erfolgte durch direkten Ausstellungsbesuch mit systematischer Bewertung der gestalterischen Umsetzung und Besuchererfahrung.</p>
+  
+  <h3>Narrative Struktur & Thematische Umsetzung</h3>
+  <p>Die Ausstellung thematisiert unterschiedliche Zeiten und verschiedene Verhaltensweisen des Lebens. Durch die fotografische Darstellung dörflicher Strukturen und menschlicher Beziehungen wird eine vielschichtige Erzählung über das entwickelt, was Menschen trennt und verbindet.</p>
+  
+  <h3>Zielgruppe & Zugänglichkeit</h3>
+  <p>Die Ausstellung richtet sich primär an Jugendliche ab 16 Jahren und junge Erwachsene. Die Thematik spricht persönlich an und schafft Identifikationsmöglichkeiten. Vorkenntnisse sind nicht zwingend erforderlich, da die visuelle Sprache der Fotografie unmittelbar verständlich ist.</p>
+  
+  <h3>Gestalterische Innovation & Raumkonzept</h3>
+  <p>Besonders bemerkenswert ist der Einsatz von "extra Wänden", die den Raum strukturieren und neue Blickwinkel auf die Fotografien ermöglichen. Diese räumlichen Interventionen schaffen eine dynamische Ausstellungsarchitektur, die über die traditionelle Wandhängung hinausgeht.</p>
+  
+  <div class="highlight-box">
+    <p>"Die kühle und einfache Atmosphäre wirkt seriös und schafft einen würdigen Rahmen für die präsentierten Arbeiten - ein Beispiel für zurückhaltende, aber wirkungsvolle Ausstellungsgestaltung."</p>
+  </div>
+  
+  <h3>Typografie & Besucherführung</h3>
+  <p>Die Wandtexte werden durch durchdachte Typografie optisch attraktiver gestaltet. Die Besucherführung ist so konzipiert, dass eine klare Route vorgegeben wird, ohne dass Besucher eigene Wege finden müssen. Dies schafft eine kontrollierte, aber natürliche Erfahrung.</p>
+  
+  <h3>Bildergalerie Ein Dorf</h3>
+  <div class="image-gallery">
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox('dorf', 0)">
+        <img src="Fotos/Dorf1.jpeg" alt="Dorf Foto 1" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('dorf', 1)">
+        <img src="Fotos/Dorf2.jpeg" alt="Dorf Foto 2" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('dorf', 2)">
+        <img src="Fotos/Dorf3.jpeg" alt="Dorf Foto 3" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('dorf', 3)">
+        <img src="Fotos/Dorf4.jpeg" alt="Dorf Foto 4" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('dorf', 4)">
+        <img src="Fotos/Dorf5.jpeg" alt="Dorf Foto 5" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('dorf', 5)">
+        <img src="Fotos/Dorf6.jpeg" alt="Dorf Foto 6" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('dorf', 6)">
+        <img src="Fotos/Dorf7.jpeg" alt="Dorf Foto 7" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('dorf', 7)">
+        <img src="Fotos/Dorf8.jpeg" alt="Dorf Foto 8" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('dorf', 8)">
+        <img src="Fotos/Dorf9.jpeg" alt="Dorf Foto 9" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('dorf', 9)">
+        <img src="Fotos/Dorf10.jpeg" alt="Dorf Foto 10" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <h3>Multimediale Ansätze & Interaktivität</h3>
+  <p>Die Ausstellung setzt vielfältige Medien ein, darunter ungewöhnliche Installationen wie ein Bett mit Schlafmasken. Diese innovativen Ansätze schaffen Abwechslung und ermöglichen es Besuchern, nicht permanent stehen oder laufen zu müssen. Bilder werden bewusst in unterschiedlichen Reihen gehängt, was für visuelle Spannung sorgt.</p>
+  
+  <h3>Atmosphäre & Dramatisierung</h3>
+  <p>Musik wird gezielt eingesetzt, um bestimmte Sequenzen zu dramatisieren und emotionale Wirkung zu verstärken. Die Interaktivität wird durch verschiedene Partizipationsmöglichkeiten gefördert, wodurch die Ausstellung über reine Betrachtung hinausgeht.</p>
+  
+  <h3>Kritische Bewertung & Verbesserungsvorschläge</h3>
+  <p><strong>Positive Aspekte:</strong> Innovative Raumgestaltung durch extra Wände, attraktive Typografie, durchdachte Besucherführung, vielfältige Medieneinsätze, seriöse Atmosphäre durch zurückhaltende Gestaltung.</p>
+  
+  <p><strong>Verbesserungspotential:</strong></p>
+  <ul class="methodology-list">
+    <li><strong>Textreduktion:</strong> Deutlich zu viel Text - Besucher müssen "Romane" lesen, um Bilder zu verstehen</li>
+    <li><strong>Zeitliche Strukturierung:</strong> Verschiedene Zeiten werden teilweise unverständlich in einem Raum vermischt</li>
+    <li><strong>Emotionale Vermittlung:</strong> Mehr Arbeit mit Stichpunkten und emotionaler Gestaltung (z.B. durch Wandfarben)</li>
+    <li><strong>Beleuchtung:</strong> Bessere Positionierung zur Vermeidung von Bildreflexionen</li>
+    <li><strong>Dynamik:</strong> Stellenweise zu monoton und langweilig gehalten</li>
+  </ul>
+  
+  <h3>Inklusivität & Zugänglichkeit</h3>
+  <p>Die Ausstellung berücksichtigt verschiedene Bedürfnisse durch wechselnde Präsentationsformen und Ruhezonen. Die unterschiedlichen Hängungen der Bilder schaffen Abwechslung und halten die Aufmerksamkeit aufrecht.</p>
+  
+  <div class="highlight-box">
+    <p>"Ein Dorf / was zwischen uns steht" zeigt innovatives Potenzial in der Raumgestaltung, leidet aber unter textlastiger Vermittlung - ein Beispiel dafür, wie visuelle Kommunikation über Worte hinausgehen sollte.</p>
+  </div>
+</div>
+
+<div class="content-panel" id="content-bruecke">
+  <h2>Brücke Museum</h2>
+  <p>Detaillierte Analyse des Brücke Museums mit Fokus auf die 120-jährige Geschichte der Künstlergruppe "Die Brücke", innovative Präsentationsformen und besucherorientierte Vermittlungsstrategien. Die Untersuchung erfolgte durch direkten Museumsbesuch mit systematischer Bewertung der kuratorischen Umsetzung und Besuchererfahrung.</p>
+  
+  <h3>Thematische Gattungen & Künstlerische Vielfalt</h3>
+  <p>Das Museum präsentiert ein breites Spektrum künstlerischer Gattungen: Kleidung, Landschaft, Architektur und besonders eindrucksvolle Stillleben. Die Stillleben-Malerei wird nicht nur als künstlerische Technik präsentiert, sondern in ihrem symbolischen und gesellschaftlichen Kontext - als Ausdruck von Status, künstlerischer Perspektive und kultureller Bedeutung.</p>
+  
+  <h3>Zielgruppe & Zugänglichkeit</h3>
+  <p>Die Ausstellung richtet sich an alle Altersgruppen und schafft durch differenzierte Vermittlungsansätze für jeden Besucher Zugänge. Vorkenntnisse über die Künstlergruppe "Die Brücke" und Kunstgeschichte verstärken das Verständnis für die künstlerischen Entscheidungen und historischen Kontexte, sind aber nicht zwingend erforderlich für ein bereicherndes Museumserlebnis.</p>
+  
+  <h3>Innovative Ausstellungsgestaltung & Besucherführung</h3>
+  <p>Besonders hervorzuheben ist die klare, aber flexible Besucherführung. Eine deutlich erkennbare Route ermöglicht strukturierte Erfahrungen, während gleichzeitig individuelle Wege möglich bleiben. Die Abwechslung zwischen unterhaltsamem Text und "Fenstern der Ruhe" schafft eine ausgewogene Balance zwischen Information und Kontemplation.</p>
+  
+  <div class="highlight-box">
+    <p>"Die prägnanten Bilderrahmen verleihen jedem Kunstwerk einen individuellen Charakter und verstärken die Wirkung der farbenfrohen Ölfarben, die bis heute noch deutlich wahrnehmbar sind."</p>
+  </div>
+  
+  <h3>Kuratorische Innovation & Sortierungssystem</h3>
+  <p>Die durchdachte Hängung der Bilder folgt multiple Ordnungsprinzipien: alphabetische und numerische Sortierung nach den auswählenden Personen, adaptive Höhenpositionierung (Kinderbilder werden niedriger gehängt für bessere Zugänglichkeit), sowie bewusste Variation zwischen einheitlichen und unterschiedlichen Höhen. Die Größenvariation von klein zu groß schafft visuellen Rhythmus.</p>
+  
+  <h3>Textgestaltung & Narrative Vermittlung</h3>
+  <p>Herausragend sind die Begleittexte zu den Kunstwerken, die als "Highlight der Ausstellung" wahrgenommen werden. Sie sind schön formuliert, witzig und prägnant kurz gehalten - oft interessanter als die Bilder selbst. Diese Texte schaffen Zugänge und wecken Neugier, ohne zu überwältigen.</p>
+  
+  <h3>Bildergalerie Brücke</h3>
+  <div class="image-gallery">
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox('brücke', 0)">
+        <img src="Fotos/Brücke1.jpeg" alt="Brücke Foto 1" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('brücke', 1)">
+        <img src="Fotos/Brücke2.jpeg" alt="Brücke Foto 2" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('brücke', 2)">
+        <img src="Fotos/Brücke3.jpeg" alt="Brücke Foto 3" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('brücke', 3)">
+        <img src="Fotos/Brücke4.jpeg" alt="Brücke Foto 4" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('brücke', 4)">
+        <img src="Fotos/Brücke5.jpeg" alt="Brücke Foto 5" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('brücke', 5)">
+        <img src="Fotos/Brücke6.jpeg" alt="Brücke Foto 6" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('brücke', 6)">
+        <img src="Fotos/Brücke7.jpeg" alt="Brücke Foto 7" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('brücke', 7)">
+        <img src="Fotos/Brücke8.jpeg" alt="Brücke Foto 8" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('brücke', 8)">
+        <img src="Fotos/Brücke9.jpeg" alt="Brücke Foto 9" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('brücke', 9)">
+        <img src="Fotos/Brücke10.jpeg" alt="Brücke Foto 10" class="gallery-image">
+        <div class="gallery-overlay">
+          <span class="gallery-icon">🔍</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <h3>Olfaktorische Dimension</h3>
+  <p>Eine besondere sinnliche Erfahrung bietet der noch heute wahrnehmbare Geruch der historischen Ölfarben. Diese olfaktorische Dimension verstärkt die Authentizität der Exponate und schafft eine direkte, emotionale Verbindung zur künstlerischen Praxis der Brücke-Künstler.</p>
+  
+  <h3>Farbgestaltung & Materialität</h3>
+  <p>Die farbenfrohen Farben der Ölgemälde und Holzschnitte "strahlen aus dem Dunklen heraus" und schaffen eine dramatische Wirkung. Besonders die Holzschnitte mit ihren kräftigen Kontrasten und die leuchtenden Ölfarben demonstrieren die revolutionäre Kraft der Brücke-Künstler.</p>
+  
+  <h3>Inklusivität & Partizipative Elemente</h3>
+  <p>Das Museum zeigt vorbildliche Inklusivität durch verschiedene Ansätze:</p>
+  <ul class="methodology-list">
+    <li><strong>Interaktive Station:</strong> Tisch mit Stiften und Papier für das Nachzeichnen von Lieblingsbildern</li>
+    <li><strong>Familienorientierung:</strong> Angebote für "die ganze Familie" mit Möglichkeit, eigene Werke an der Wand aufzuhängen</li>
+    <li><strong>Lese-Ecke:</strong> Zentral gelegener Informationsbereich für vertiefende Recherche über Künstler und Gemälde</li>
+    <li><strong>Toleranz-Statement:</strong> Klare Positionierung des Museums für Offenheit und Toleranz</li>
+  </ul>
+  
+  <h3>Kritische Bewertung & Verbesserungsvorschläge</h3>
+  <p><strong>Positive Aspekte:</strong> Außergewöhnlich gelungene Textgestaltung, durchdachte Hängungskonzepte, innovative Sortierungssysteme, erfolgreiche Inklusionsstrategien, sinnliche Authentizität durch Ölfarben-Geruch, partizipative Elemente.</p>
+  
+  <p><strong>Verbesserungspotential:</strong></p>
+  <ul class="methodology-list">
+    <li><strong>Beleuchtung:</strong> Optimierung der Lichtführung zur Reduzierung von Reflexionen, die das Betrachtungserlebnis beeinträchtigen</li>
+    <li><strong>Glasoberflächen:</strong> Entspiegelung oder alternative Präsentationsformen für besonders reflexionsanfällige Exponate</li>
+    <li><strong>Lichttechnik:</strong> Adaptive Beleuchtung, die sich an Tageszeit und Besucheraufkommen anpasst</li>
+  </ul>
+  
+  <div class="highlight-box">
+    <p>Das Brücke Museum gilt als eine der gelungensten Museumskonzeptionen mit perfekter Balance zwischen wissenschaftlicher Fundierung und besucherorientierter Vermittlung - ein Modell für zeitgemäße Kunstmuseen.</p>
+  </div>
+</div>
+
+<div class="content-panel" id="content-broehan">
+  <h2>Bröhan Museum</h2>
+  <p>Detaillierte Analyse des Bröhan Museums mit Fokus auf Jugendstil, Art Déco und Funktionalismus sowie innovative Ansätze zur Vermittlung von Design- und Kunsthandwerksgeschichte. Die Untersuchung erfolgte durch direkten Museumsbesuch mit systematischer Bewertung der gestalterischen Umsetzung und Besuchererfahrung, insbesondere der Alchemia-Ausstellung.</p>
+  
+  <h3>Zielgruppe & Zugänglichkeit</h3>
+  <p>Das Museum richtet sich an ein breites Publikum und ist grundsätzlich "für jeden" zugänglich. Besonders angesprochen werden Menschen mit Interesse an Mode und Fashion sowie an Design- und Möbelgeschichte. Barrierefreiheit wird berücksichtigt. Interessant ist die Feststellung, dass die Ausstellung "eventuell nichts für Tischler" bietet - ein Hinweis darauf, dass das Museum eher kulturhistorische als handwerklich-technische Perspektiven vermittelt.</p>
+  
+  <h3>Vorkenntnisse & Kontextualisierung</h3>
+  <p>Vorkenntnisse sind nicht zwingend erforderlich - die Möbel und Objekte können "auch so genossen" werden. Jedoch verstärkt Hintergrundwissen über die Geschichte der Möbel und das Konzept der Alchemia das Verständnis erheblich. Das Museum schafft eine Balance zwischen unmittelbarer ästhetischer Wirkung und vertiefender Kontextualisierung.</p>
+  
+  <h3>Persönliche Wirkung & Emotionale Resonanz</h3>
+  <p>Die Möbel werden als "schön" und "freudebringend" wahrgenommen und regen zu "langem Nachdenken" an. Diese emotionale Dimension zeigt die Kraft des Museums, über reine Wissensvermittlung hinaus persönliche Reflexion und ästhetische Erfahrung zu ermöglichen.</p>
+  
+  <div class="highlight-box">
+    <p>"Die Möbel verbreiten Freude und bringen dazu, darüber lange nachzudenken - ein Zeichen für gelungene Museumsgestaltung, die sowohl emotional als auch intellektuell anspricht."</p>
+  </div>
+  
+  <h3>Innovative Vermittlungsstrategien</h3>
+  <p>Das Museum zeichnet sich durch experimentfreundliche Ansätze aus und stellt klar dar, "wie es früher war". Besonders bemerkenswert ist die adaptive Raumgestaltung: jeder Ausstellungsraum wird individuell an die präsentierten Objekte angepasst, wodurch eine optimale Präsentationsumgebung entsteht.</p>
+  
+  <h3>Gestalterische Umsetzung & Raumkonzept</h3>
+  <p>Die thematische Gestaltung erfolgt durch geschickte Kombination verschiedener Elemente: Poster und Gemälde werden mit abgestimmten Wandfarben kombiniert und individuell an die Möbel angepasst. Diese multimodale Herangehensweise schafft kohärente, aber abwechslungsreiche Raumwelten.</p>
+  
+  <h3>Bildergalerie Bröhan</h3>
+<div class="image-gallery">
+  <div class="gallery-grid">
+    <div class="gallery-item" onclick="openLightbox('bröhan', 0)">
+      <img src="Fotos/Bröhan1.jpeg" alt="Bröhan Foto 1" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('bröhan', 1)">
+      <img src="Fotos/Bröhan2.jpeg" alt="Bröhan Foto 2" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('bröhan', 2)">
+      <img src="Fotos/Bröhan3.jpeg" alt="Bröhan Foto 3" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('bröhan', 3)">
+      <img src="Fotos/Bröhan4.jpeg" alt="Bröhan Foto 4" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('bröhan', 4)">
+      <img src="Fotos/Bröhan5.jpeg" alt="Bröhan Foto 5" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('bröhan', 5)">
+      <img src="Fotos/Bröhan6.jpeg" alt="Bröhan Foto 6" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('bröhan', 6)">
+      <img src="Fotos/Bröhan7.jpeg" alt="Bröhan Foto 7" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('bröhan', 7)">
+      <img src="Fotos/Bröhan8.jpeg" alt="Bröhan Foto 8" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('bröhan', 8)">
+      <img src="Fotos/Bröhan9.jpeg" alt="Bröhan Foto 9" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('bröhan', 9)">
+      <img src="Fotos/Bröhan10.jpeg" alt="Bröhan Foto 10" class="gallery-image">
+      <div class="gallery-overlay">
+        <span class="gallery-icon">🔍</span>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <h3>Raumcharakter & Besuchererfahrung</h3>
+  <p>Jeder Raum entwickelt seinen "eigenen Charakter" und wird dadurch "spannend und voller Überraschungen". Diese Individualisierung der Räume verhindert Monotonie und hält die Aufmerksamkeit der Besucher über den gesamten Rundgang aufrecht.</p>
+  
+  <h3>Textfreie Wissensvermittlung</h3>
+  <p>Besonders hervorzuheben ist, dass "auch ohne viel Text viel verstanden werden kann". Die Entwicklung wird "ohne Text" sichtbar, was für eine gelungene visuelle Kommunikation und intuitive Präsentation spricht. Die Objekte selbst werden zu Erzählern ihrer Geschichte.</p>
+  
+  <h3>Inspiration & Handlungsimpulse</h3>
+  <p>Die Ausstellung inspiriert zu konkreten Lebensprinzipien:</p>
+  <ul class="methodology-list">
+    <li><strong>Experimentierfreude:</strong> "Mut zum experimentieren und einfach starten statt über Sachen lange zu planen"</li>
+    <li><strong>Kritisches Denken:</strong> "Normen hinterfragen" als zentraler Impuls</li>
+    <li><strong>Pragmatismus:</strong> Handeln vor Perfektion</li>
+  </ul>
+  
+  <div class="highlight-box">
+    <p>Das Bröhan Museum zeigt vorbildlich, wie adaptive Raumgestaltung und textfreie Wissensvermittlung eine emotionale und intellektuelle Auseinandersetzung mit Designgeschichte ermöglichen - ein Modell für zeitgemäße Designmuseen.</p>
+  </div>
+</div>
+
+<div class="content-panel" id="content-liebermann">
+  <h2>Liebermann Villa - "Cosmopolite. Die versunkene Welt von Felice und Carl Bernstein"</h2>
+  <p>Detaillierte Analyse der Liebermann Villa mit Fokus auf Impressionismus, biografische Narration und die Integration von Kunst, Natur und Architektur. Die Untersuchung erfolgte durch direkten Museumsbesuch mit systematischer Bewertung der Ausstellungskonzeption zur Künstlerbiografie Max Liebermanns und seiner Inspirationsquellen.</p>
+  
+  <h3>Thematische Gattungen & Künstlerische Vielfalt</h3>
+  <p>Die Ausstellung präsentiert verschiedene künstlerische Gattungen: Kleidung, Landschaft und Architektur sowie besonders eindrucksvolle Stillleben. Die Stillleben-Malerei wird nicht nur als künstlerische Technik präsentiert, sondern in ihrem symbolischen und gesellschaftlichen Kontext - als Ausdruck von Status, künstlerischer Perspektive und kultureller Bedeutung der Impressionismus-Epoche.</p>
+  
+  <h3>Narrative Struktur & Biografische Vermittlung</h3>
+  <p>Die Ausstellung erzählt die Biografien der Künstler des Impressionismus und schafft eine direkte Verbindung zwischen Max Liebermann und seinem Wirkungsort. Besonders bemerkenswert ist die Darstellung der Ehefrau, die nach dem Tod ihres Mannes "auf eigene Beine steht" - für die damalige Zeit eine außergewöhnliche gesellschaftliche Entwicklung.</p>
+  
+  <h3>Bildergalerie Liebermann Villa</h3>
+  <div class="image-gallery">
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox('lv', 0)">
+        <img src="Fotos/LV1.jpeg" alt="Liebermann Villa Foto 1" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('lv', 1)">
+        <img src="Fotos/LV2.jpeg" alt="Liebermann Villa Foto 2" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('lv', 2)">
+        <img src="Fotos/LV3.jpeg" alt="Liebermann Villa Foto 3" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('lv', 3)">
+        <img src="Fotos/LV4.jpeg" alt="Liebermann Villa Foto 4" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('lv', 4)">
+        <img src="Fotos/LV5.jpeg" alt="Liebermann Villa Foto 5" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('lv', 5)">
+        <img src="Fotos/LV6.jpeg" alt="Liebermann Villa Foto 6" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('lv', 6)">
+        <img src="Fotos/LV7.jpeg" alt="Liebermann Villa Foto 7" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('lv', 7)">
+        <img src="Fotos/LV8.jpeg" alt="Liebermann Villa Foto 8" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('lv', 8)">
+        <img src="Fotos/LV9.jpeg" alt="Liebermann Villa Foto 9" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('lv', 9)">
+        <img src="Fotos/LV10.jpeg" alt="Liebermann Villa Foto 10" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <h3>Raumgestaltung & Besucherführung</h3>
+  <p>Die Räume sind bewusst klein gehalten und gut beleuchtet, was zu Ruhe und klarer Übersicht führt. Es gibt keine vorgeschriebene Route - Besucher können ihre eigenen Wege gehen. Die zwei Ausstellungen werden je nach Raum klar getrennt, wodurch eine strukturierte aber flexible Besuchererfahrung entsteht. Der angrenzende Garten verstärkt den ruhigen, kontemplativen Charakter der Villa - hier kann man kaum spielen, was die erwachsenenorientierte Atmosphäre zusätzlich betont.</p>
+</div>
+
+<div class="content-panel" id="content-kunstgewerbe">
+  <h2>Kunstgewerbe Museum</h2>
+  <p>Detaillierte Analyse des Kunstgewerbe Museums mit Fokus auf Designgeschichte, Kunsthandwerk und innovative Vermittlungsansätze. Die Untersuchung erfolgte durch direkten Museumsbesuch mit systematischer Bewertung der Objektpräsentation, digitalen Vermittlungsstrategien und der besonderen interaktiven Erfahrungen.</p>
+  
+  <h3>Sammlungsqualität & Objektvielfalt</h3>
+  <p>Das Museum verfügt über eine außergewöhnlich spannende Sammlung mit vielfältigen Exponaten aus verschiedenen Epochen und Kunsthandwerk-Bereichen. Die Qualität und Diversität der ausgestellten Objekte bietet enormes Potenzial für eine beeindruckende Museumserfahrung - von historischen Möbelstücken bis zu kunstvollen Porzellanarbeiten.</p>
+  
+  <h3>Zielgruppe & Universelle Zugänglichkeit</h3>
+  <p>Das Museum richtet sich an ein universelles Publikum und ist grundsätzlich "für jeden" konzipiert. Diese breite Zielgruppenansprache spiegelt sich in der Vielfalt der Exponate und Vermittlungsansätze wider, schafft aber gleichzeitig Herausforderungen bei der fokussierten Ausstellungsgestaltung.</p>
+  
+  <h3>Digitale Innovation & QR-Code-System</h3>
+  <p>Besonders hervorzuheben ist das innovative QR-Code-System, das zu den positiven Aspekten der Ausstellung gehört. Diese digitalen Codes erklären Objekte explizit und zeigen sogar Preisinformationen für Möbelstücke an - ein moderner Ansatz zur Kontextualisierung von Kunsthandwerk und Design, der praktische Relevanz mit kulturhistorischem Wissen verbindet.</p>
+  
+  <div class="highlight-box">
+    <p>"Die QR-Codes schaffen eine direkte Brücke zwischen historischem Kunsthandwerk und zeitgenössischer Lebenswelt - Besucher erfahren nicht nur die Geschichte, sondern auch den materiellen Wert der Exponate."</p>
+  </div>
+  
+  <h3>Interaktive Erfahrungen & Haptische Elemente</h3>
+  <p>Das absolute Highlight des Museums ist der Raum mit historischen Kleidungsstücken, in dem Besucher "die alten extra Gerüste für Frauen aus dem 18. Jahrhundert tragen dürfen". Diese haptische Erfahrung ermöglicht eine einzigartige körperliche Verbindung zur Geschichte und macht die physischen Herausforderungen historischer Mode unmittelbar erfahrbar.</p>
+  
+  <h3>Bildergalerie Kunstgewerbe Museum</h3>
+<div class="image-gallery">
+  <div class="gallery-grid">
+    <div class="gallery-item" onclick="openLightbox('km', 0)">
+      <img src="Fotos/km1.jpeg" alt="Kunstgewerbe Museum Foto 1" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('km', 1)">
+      <img src="Fotos/km2.jpeg" alt="Kunstgewerbe Museum Foto 2" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('km', 2)">
+      <img src="Fotos/km3.jpeg" alt="Kunstgewerbe Museum Foto 3" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('km', 3)">
+      <img src="Fotos/km4.jpeg" alt="Kunstgewerbe Museum Foto 4" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('km', 4)">
+      <img src="Fotos/km5.jpeg" alt="Kunstgewerbe Museum Foto 5" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('km', 5)">
+      <img src="Fotos/km6.jpeg" alt="Kunstgewerbe Museum Foto 6" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('km', 6)">
+      <img src="Fotos/km7.jpeg" alt="Kunstgewerbe Museum Foto 7" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('km', 7)">
+      <img src="Fotos/km8.jpeg" alt="Kunstgewerbe Museum Foto 8" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('km', 8)">
+      <img src="Fotos/km9.jpeg" alt="Kunstgewerbe Museum Foto 9" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('km', 9)">
+      <img src="Fotos/km10.jpeg" alt="Kunstgewerbe Museum Foto 10" class="gallery-image">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+  </div>
+</div>
+  
+  <h3>Besucherführung & Orientierungsprobleme</h3>
+  <p>Ein gravierendes Problem stellt das Fehlen einer klaren Route dar. Besucher erleben "starke Verwirrung" durch die unstrukturierte Raumführung, was die ansonsten spannende Sammlung erheblich entwertet. Die fehlende Orientierungshilfe führt zu einem fragmentierten Besuchserlebnis.</p>
+  
+  <h3>Kritische Bewertung & Verbesserungsvorschläge</h3>
+  <p><strong>Positive Aspekte:</strong> Außergewöhnlich spannende Sammlung, innovative QR-Code-Integration mit Preisinformationen, einzigartige interaktive Erfahrung mit historischen Kleidungsstücken, universelle Zielgruppenansprache.</p>
+  
+  <p><strong>Verbesserungspotential:</strong></p>
+  <ul class="methodology-list">
+    <li><strong>Besucherführung:</strong> Dringend erforderlich ist eine klare, intuitive Route durch die Ausstellung mit Wegweisern und Orientierungshilfen</li>
+    <li><strong>Objektpräsentation:</strong> Dynamischere Hängung statt monotoner Reihenfolgen - Gruppierung nach Themen, Epochen oder Materialien</li>
+    <li><strong>Raumgestaltung:</strong> Abwechslungsreiche Präsentationsformen zur Vermeidung von Langeweile und Aufmerksamkeitsverlust</li>
+    <li><strong>Narrative Struktur:</strong> Entwicklung einer inhaltlichen Dramaturgie, die Besucher durch die Designgeschichte führt</li>
+  </ul>
+  
+  <div class="highlight-box">
+    <p>Das Kunstgewerbe Museum zeigt das Paradox einer herausragenden Sammlung mit mangelhafter Präsentation - ein Beispiel dafür, wie wichtig kuratorische Exzellenz für die Wirkung selbst der wertvollsten Exponate ist.</p>
+  </div>
+</div>
+
+<div class="content-panel" id="content-urban">
+  <h2>Urban Nation Museum</h2>
+  <p>Detaillierte Analyse des Urban Nation Museums mit Fokus auf Street Art, Graffiti-Kultur und zeitgenössische urbane Kunstformen. Die Untersuchung erfolgte durch direkten Museumsbesuch mit systematischer Bewertung der Ausstellungskonzeption, Zielgruppenansprache und innovativer Vermittlungsstrategien für urbane Kunstgeschichte von den 70er Jahren bis heute.</p>
+  
+  <h3>Zielgruppe & Generationsansprache</h3>
+  <p>Das Museum richtet sich grundsätzlich an "jeden", weist aber eine besondere Ausrichtung auf Besucher unter 16 Jahren auf. Diese junge Zielgruppenorientierung spiegelt sich in der lebendigen, experimentellen Gestaltung wider. Besonders angesprochen werden Graffiti-Interessierte und Menschen mit Affinität zur urbanen Kultur. Barrierefreiheit wird berücksichtigt, um eine inklusive Museumserfahrung zu gewährleisten.</p>
+  
+  <h3>Vorkenntnisse & Kulturelle Kontextualisierung</h3>
+  <p>Vorkenntnisse sind nicht zwingend erforderlich - die Sprays und Street Art-Werke können "auch so genossen" werden. Jedoch verstärkt Hintergrundwissen über die Geschichte der Graffiti-Bewegung und Street Art-Kultur das Verständnis erheblich. Das Museum vermittelt die komplexe Geschichte hinter den Sprays, die für das Verständnis des Konzepts und der kulturellen Bedeutung wesentlich ist.</p>
+  
+  <h3>Persönliche Ansprache & Emotionale Wirkung</h3>
+  <p>Die Objekte werden "persönlich interessant und abwechslungsreich rübergebracht" durch vielfältige Farbwechsel, die jeden Raum interessant und lebendig wirken lassen. Diese emotionale Ansprache schafft eine direkte Verbindung zwischen Besuchern und der urbanen Kunstform und macht abstrakte Kulturgeschichte konkret erfahrbar.</p>
+  
+  <div class="highlight-box">
+    <p>"Dunkle Zeiten sollen wieder überschrieben werden durch Freude im Leben - eine zentrale Botschaft der urbanen Kunst, die Hoffnung und Widerstand in schwierigen gesellschaftlichen Situationen ausdrückt."</p>
+  </div>
+  
+  <h3>Innovative Vermittlungsstrategien</h3>
+  <p>Das Museum zeichnet sich durch stark experimentfreundliche Ansätze aus und stellt klar dar, "wie es früher war". Die Ausstellungsräume werden individuell an die Bilder und Kunstwerke angepasst, wodurch eine authentische und immersive Erfahrung entsteht, die die urbane Umgebung der Street Art nachempfindet.</p>
+  
+  <h3>Bildergalerie Urban Nation Museum</h3>
+  <div class="image-gallery">
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox('urm', 0)">
+        <img src="Fotos/URM1.jpeg" alt="Urban Nation Museum Foto 1" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('urm', 1)">
+        <img src="Fotos/URM2.jpeg" alt="Urban Nation Museum Foto 2" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('urm', 2)">
+        <img src="Fotos/URM3.jpeg" alt="Urban Nation Museum Foto 3" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('urm', 3)">
+        <img src="Fotos/URM4.jpeg" alt="Urban Nation Museum Foto 4" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('urm', 4)">
+        <img src="Fotos/URM5.jpeg" alt="Urban Nation Museum Foto 5" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('urm', 5)">
+        <img src="Fotos/URM6.jpeg" alt="Urban Nation Museum Foto 6" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('urm', 6)">
+        <img src="Fotos/URM7.jpeg" alt="Urban Nation Museum Foto 7" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('urm', 7)">
+        <img src="Fotos/URM8.jpeg" alt="Urban Nation Museum Foto 8" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('urm', 8)">
+        <img src="Fotos/URM9.jpeg" alt="Urban Nation Museum Foto 9" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('urm', 9)">
+        <img src="Fotos/URM10.jpeg" alt="Urban Nation Museum Foto 10" class="gallery-image">
+        <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+      </div>
     </div>
   </div>
 
-  <script>
-    // Gallery functionality
-    const galleryImages = [
-      {
-        src: "Fotos/Fotogalerie1.jpeg",
-        alt: "Museum Foto 1"
-      },
-      {
-        src: "Fotos/Fotogalerie2.jpeg",
-        alt: "Museum Foto 2"
-      },
-      {
-        src: "Fotos/Fotogalerie3.jpeg",
-        alt: "Museum Foto 3"
-      },
-      {
-        src: "Fotos/Fotogalerie4.jpeg",
-        alt: "Museum Foto 4"
-      },
-      {
-        src: "Fotos/Fotogalerie5.jpeg",
-        alt: "Museum Foto 5"
-      },
-      {
-        src: "Fotos/Fotogalerie6.jpeg",
-        alt: "Museum Foto 6"
-      },
-      {
-        src: "Fotos/Fotogalerie7.jpeg",
-        alt: "Museum Foto 7"
-      },
-      {
-        src: "Fotos/Fotogalerie8.jpeg",
-        alt: "Museum Foto 8"
-      },
-      {
-        src: "Fotos/Fotogalerie9.jpeg",
-        alt: "Museum Foto 9"
-      },
-      {
-        src: "Fotos/Fotogalerie10.jpeg",
-        alt: "Museum Foto 10"
+  <h3>Gestalterische Umsetzung & Raumkonzept</h3>
+  <p>Die thematische Gestaltung erfolgt durch geschickte Kombination verschiedener Elemente: Poster und Gemälde werden mit unterschiedlich angepassten Wandfarben kombiniert. Diese adaptive Raumgestaltung schafft für jedes Exponat eine optimale Präsentationsumgebung und verstärkt die Wirkung der urbanen Kunstwerke.</p>
+  
+  <h3>Raumcharakter & Besuchererfahrung</h3>
+  <p>Jeder Raum entwickelt seinen "eigenen Charakter" und wird dadurch "spannend und voll mit Überraschungen". Diese Individualisierung der Räume hält die Aufmerksamkeit über den gesamten Rundgang aufrecht und spiegelt die Vielfalt und Kreativität der urbanen Kunstszene wider.</p>
+  
+  <h3>Textreiche Wissensvermittlung</h3>
+  <p>Die Ausstellung arbeitet "mit viel Text", wodurch Besucher "viel verstehen" können. Diese umfassende textuelle Begleitung ermöglicht eine tiefe Auseinandersetzung mit der komplexen Geschichte und kulturellen Bedeutung der urbanen Kunst von den 70er Jahren bis heute.</p>
+  
+  <h3>Kritische Bewertung & Verbesserungsvorschläge</h3>
+  <p><strong>Positive Aspekte:</strong> Sehr interessante und umfassende Ausstellung mit viel zu sehen, adaptive Raumgestaltung, experimentfreundliche Präsentation, umfassende historische Abdeckung von den 70ern bis heute, individueller Raumcharakter, gelungene Integration von Farbgestaltung und Objekten.</p>
+  
+  <p><strong>Verbesserungspotential:</strong></p>
+  <ul class="methodology-list">
+    <li><strong>Textgestaltung:</strong> "Paar Texte waren sehr schlecht gestaltet, so dass man es gar nicht lesen kann ohne sich zu verlesen"</li>
+    <li><strong>Typografie:</strong> Bessere Lesbarkeit durch optimierte Schriftgestaltung, die dem urbanen Charakter gerecht wird</li>
+    <li><strong>Textlayout:</strong> Verbesserte Positionierung und Strukturierung der umfangreichen textlichen Informationen</li>
+  </ul>
+  
+  <div class="highlight-box">
+    <p>Das Urban Nation Museum zeigt vorbildlich, wie adaptive Raumgestaltung und umfassende historische Kontextualisierung eine emotionale und intellektuelle Auseinandersetzung mit urbaner Kunstgeschichte ermöglichen - ein Modell für zeitgemäße Museen alternativer Kunstformen.</p>
+  </div>
+</div>
+
+<div class="content-panel" id="content-2000">
+  <h2>2000-2020: Digitale Revolution</h2>
+  <p>Das neue Jahrtausend steht im Zeichen der digitalen Transformation. Internet, Smartphones und soziale Medien verändern grundlegend, wie Menschen mit Kultur interagieren.</p>
+  
+  <h3>Multimediale Erfahrungen</h3>
+  <p>Audioguides werden zu komplexen multimedialen Systemen. Augmented Reality und Virtual Reality schaffen immersive Erlebnisse, die die physische Realität erweitern.</p>
+  
+  <h3>Social Media & Partizipation</h3>
+  <p>Museen müssen lernen, mit sozialen Medien umzugehen. Besucher werden zu Content-Produzenten und beeinflussen die öffentliche Wahrnehmung von Ausstellungen.</p>
+  
+  <div class="highlight-box">
+    <p>Das Museum wird zur "Drehscheibe kultureller Kommunikation" - vernetzt, interaktiv und global zugänglich.</p>
+  </div>
+  
+  <h3>Architektonische Meisterwerke</h3>
+  <p>Spektakuläre Museumsbauten von Star-Architekten werden selbst zu Kunstobjekten und touristischen Attraktionen.</p>
+</div>
+
+<div class="content-panel" id="content-2020">
+  <h2>2020-Heute: Pandemie & Neue Normalität</h2>
+  <p>Die COVID-19-Pandemie forciert eine dramatische Beschleunigung der Digitalisierung. Virtuelle Museumsbesuche und Online-Ausstellungen werden zur Normalität.</p>
+  
+  <h3>Virtuelle Welten</h3>
+  <p>Hochauflösende 3D-Scans, Virtual Reality Tours und interaktive Online-Plattformen ermöglichen Museumserlebnisse von zu Hause aus.</p>
+  
+  <h3>Hybride Ansätze</h3>
+  <p>Die Zukunft liegt in der intelligenten Verknüpfung von physischen und digitalen Erfahrungen. Museen entwickeln sich zu hybriden Kulturräumen.</p>
+  
+  <h3>Nachhaltigkeit & Inklusion</h3>
+  <p>Klimawandel und gesellschaftliche Gerechtigkeit werden zu zentralen Themen. Museen überdenken ihre Rolle als gesellschaftliche Akteure.</p>
+  
+  <div class="highlight-box">
+    <p>Das Museum der Zukunft ist flexibel, inklusiv und digital vernetzt - aber behält seine Kernfunktion als Ort der Begegnung mit authentischen Objekten.</p>
+  </div>
+</div>
+
+<div class="content-panel" id="content-objekt1">
+  <h2>Fallstudie I: Klassische Skulptur</h2>
+  <p>Analyse der Präsentationsformen einer antiken Skulptur über verschiedene Epochen hinweg. Diese Fallstudie verdeutlicht, wie sich die Kontextualisierung und Inszenierung von Kunst im Laufe der Zeit verändert hat.</p>
+  
+  <h3>Entwicklung der Präsentation</h3>
+  <p>Von der monumentalen Aufstellung auf hohen Sockeln zu modernen, augennahen Präsentationen. Der Wandel spiegelt veränderte Vorstellungen von Kunst und Zugänglichkeit wider.</p>
+  
+  <h3>Technologische Unterstützung</h3>
+  <p>Moderne Beleuchtungstechnik, Klimakontrolle und Sicherheitssysteme ermöglichen heute eine optimale Konservierung bei maximaler Zugänglichkeit.</p>
+  
+  <div class="highlight-box">
+    <p>Die gleiche Skulptur erzählt je nach Präsentationskontext völlig unterschiedliche Geschichten.</p>
+  </div>
+</div>
+
+<div class="content-panel" id="content-objekt2">
+  <h2>Fallstudie II: Moderne Malerei</h2>
+  <p>Untersuchung der Hängung und Kontextualisierung eines abstrakten Gemäldes aus der Mitte des 20. Jahrhunderts. Besonderer Fokus auf die Entwicklung der "White Cube"-Ästhetik.</p>
+  
+  <h3>Räumliche Inszenierung</h3>
+  <p>Die Evolution von überfüllten Hängungen zu minimalistischen Präsentationen zeigt den Wandel im Kunstverständnis und in der Rezeptionsästhetik.</p>
+  
+  <h3>Digitale Vermittlung</h3>
+  <p>QR-Codes, Augmented Reality und interaktive Displays erweitern heute das Verständnis abstrakter Kunst durch zusätzliche Informationsebenen.</p>
+</div>
+
+<div class="content-panel" id="content-objekt3">
+  <h2>Fallstudie III: Historisches Artefakt</h2>
+  <p>Dokumentation der Ausstellungsgeschichte eines bedeutenden historischen Objekts. Die Studie zeigt, wie sich die wissenschaftliche Einordnung und öffentliche Interpretation über die Jahrzehnte gewandelt hat.</p>
+  
+  <h3>Wissenschaftlicher Erkenntnisgewinn</h3>
+  <p>Neue Forschungsmethoden und archäologische Erkenntnisse führen zu veränderten Interpretationen und entsprechend angepassten Präsentationsformen.</p>
+  
+  <h3>Kulturelle Sensibilität</h3>
+  <p>Wachsendes Bewusstsein für koloniale Vergangenheit und kulturelle Aneignung verändert den Umgang mit ethnologischen Objekten grundlegend.</p>
+</div>
+
+<div class="content-panel" id="content-fazit">
+  <h2>Fazit & Erkenntnisse</h2>
+  <p>Nach monatelanger intensiver Analyse von neun verschiedenen Museen und Ausstellungen hat sich mein Blick auf Räume, Gestaltung und Kulturvermittlung grundlegend verändert. Was als neugierige Bestandsaufnahme begann, wurde zu einer Schule des kritischen Sehens.</p>
+  
+  <h3>Was ich gelernt habe: Die Kunst des Hinterfragens</h3>
+  <p>Heute betrete ich keinen Raum mehr, ohne automatisch zu fragen: Warum ist das so? Die Wandfarbe in diesem Museum - Zufall oder Strategie? Der Text neben dem Exponat - informiert er oder manipuliert er meine Wahrnehmung? Die Höhe, in der ein Bild hängt - für wen ist es optimiert? Diese ständige kritische Reflexion hat meinen Blick geschärft und mich zu einem bewussteren Betrachter gemacht.</p>
+  
+  <h3>Museen als Manipulationsmaschinen (im positiven Sinne)</h3>
+  <p>Die wichtigste Erkenntnis: Museen sind hochraffinierte Erfahrungsmaschinen. Jedes Element - von der Beleuchtung bis zur Typografie - ist darauf ausgelegt, bestimmte Emotionen zu erzeugen und Interpretationen zu lenken. Das Urban Nation Museum vermittelt urbane Rebellionsenergie durch grelle Farben und experimentelle Raumaufteilung. Das Brücke Museum schafft durch warme Beleuchtung und den Geruch von Ölfarben eine intime Verbindung zur Kunstgeschichte. Diese bewusste Inszenierung ist nicht Manipulation im negativen Sinne, sondern hohe Kunst der Kommunikation.</p>
+  
+  <h3>Text als mächtiges Werkzeug</h3>
+  <p>Besonders faszinierend war die Macht der Texte. Ein gut formulierter Wandtext kann ein mittelmäßiges Exponat zum Highlight machen, während ein schlechter Text selbst das wertvollste Kunstwerk entwertet. Die Texte im Brücke Museum waren oft interessanter als die Bilder selbst - sie öffneten Türen zu neuen Interpretationen. Dagegen machten die überladenen Texte in der "Ein Dorf"-Ausstellung das visuelle Erleben zunichte. Text ist nie neutral - er rahmt unsere Wahrnehmung.</p>
+  
+  <div class="highlight-box">
+    <p>"Nach diesem Projekt kann ich nicht mehr 'unschuldig' durch Räume gehen. Ich sehe überall Gestaltungsentscheidungen, frage nach Intentionen und erkenne die Strategien der visuellen Kommunikation."</p>
+  </div>
+  
+  <h3>Inspiration für kreative Praxis</h3>
+  <p>Die dokumentierten Strategien sind ein Goldschatz für jeden Kreativen:</p>
+  <ul class="methodology-list">
+    <li><strong>Adaptive Raumgestaltung:</strong> Wie das Museum für Fotografie zeigt, dass jeder Raum individuell auf seine Inhalte abgestimmt werden kann</li>
+    <li><strong>Emotionale Farbführung:</strong> Vom dramatischen Schwarz bei C/O Berlin bis zu den lebendigen Farbwechseln im Urban Nation Museum</li>
+    <li><strong>Multimediale Integration:</strong> Wie QR-Codes und interaktive Elemente Brücken zwischen analog und digital schlagen</li>
+    <li><strong>Narrative Strukturierung:</strong> Wie Räume Geschichten erzählen und Besucher durch Erfahrungen führen</li>
+    <li><strong>Inklusive Gestaltung:</strong> Von haptischen Erfahrungen bis zu flexiblen Routen für verschiedene Bedürfnisse</li>
+  </ul>
+  
+  <h3>Der neue Blick auf Alltag</h3>
+  <p>Diese Erkenntnisse beschränken sich nicht auf Museen. Plötzlich erkenne ich die gleichen Strategien in Geschäften, Restaurants, Büros und sogar in Apps. Retail Design verwendet die gleichen psychologischen Prinzipien wie Ausstellungsgestaltung. Corporate Offices inszenieren Unternehmenskultur genauso bewusst wie Museen Kunstgeschichte vermitteln. Das Projekt hat mir ein universelles Analysetool gegeben.</p>
+  
+  <h3>Kritisches Bewusstsein als Superkraft</h3>
+  <p>Die wichtigste Erkenntnis ist vielleicht diese: Wissen um Gestaltungsstrategien macht frei. Wer versteht, wie Räume und Inszenierungen funktionieren, lässt sich weniger unbewusst beeinflussen und kann bewusstere Entscheidungen treffen. Gleichzeitig kann ich diese Erkenntnisse in eigenen Projekten anwenden - sei es bei der Gestaltung von Präsentationen, der Einrichtung von Räumen oder der Entwicklung digitaler Erfahrungen.</p>
+  
+  <h3>Dankbarkeit und Perspektive</h3>
+  <p>Dieses Projekt hat meinen Respekt für Kuratoren, Ausstellungsdesigner und Museumsarchitekten enorm gesteigert. Die Komplexität und Durchdachtheit hinter scheinbar einfachen Entscheidungen ist beeindruckend. Gleichzeitig hat es mich gelehrt, dass gute Gestaltung nicht unsichtbar bleiben muss - sie kann bewusst erlebt und gewürdigt werden.</p>
+  
+  <div class="stats-grid">
+    <div class="stat-item">
+      <span class="stat-number">∞</span>
+      <span class="stat-label">Neue Perspektiven</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">100%</span>
+      <span class="stat-label">Veränderte Wahrnehmung</span>
+    </div>
+  </div>
+  
+  <div class="highlight-box">
+    <p>"Dieses Projekt war mehr als eine Dokumentation - es war eine Transformation meines Blicks auf die Welt. Jeder Raum erzählt jetzt eine Geschichte, und ich habe gelernt, diese Geschichten zu lesen."</p>
+  </div>
+</div>
+</div>
+
+<!-- Lightbox for Image Gallery -->
+<div class="lightbox" id="lightbox">
+<div class="lightbox-content">
+<img class="lightbox-image" id="lightboxImage" src="" alt="">
+<button class="lightbox-close" onclick="closeLightbox()">×</button>
+<div class="lightbox-counter" id="lightboxCounter">1 / 10</div>
+</div>
+</div>
+
+<script>
+  // Galerie-Daten (Beispielarrays) – passe diese bei Bedarf an
+  const galleryImages = [
+    { src: "Fotos/Fotogalerie1.jpeg", alt: "Museum Foto 1" },
+    { src: "Fotos/Fotogalerie2.jpeg", alt: "Museum Foto 2" },
+    { src: "Fotos/Fotogalerie3.jpeg", alt: "Museum Foto 3" },
+    { src: "Fotos/Fotogalerie4.jpeg", alt: "Museum Foto 4" },
+    { src: "Fotos/Fotogalerie5.jpeg", alt: "Museum Foto 5" },
+    { src: "Fotos/Fotogalerie6.jpeg", alt: "Museum Foto 6" },
+    { src: "Fotos/Fotogalerie7.jpeg", alt: "Museum Foto 7" },
+    { src: "Fotos/Fotogalerie8.jpeg", alt: "Museum Foto 8" },
+    { src: "Fotos/Fotogalerie9.jpeg", alt: "Museum Foto 9" },
+    { src: "Fotos/Fotogalerie10.jpeg", alt: "Museum Foto 10" }
+  ];
+  
+  const coGalleryImages = [
+    { src: "Fotos/CO1.jpg", alt: "C/O Berlin Foto 1" },
+    { src: "Fotos/CO2.jpg", alt: "C/O Berlin Foto 2" },
+    { src: "Fotos/CO3.jpg", alt: "C/O Berlin Foto 3" },
+    { src: "Fotos/CO4.jpg", alt: "C/O Berlin Foto 4" },
+    { src: "Fotos/CO5.jpg", alt: "C/O Berlin Foto 5" },
+    { src: "Fotos/CO6.jpg", alt: "C/O Berlin Foto 6" },
+    { src: "Fotos/CO7.jpg", alt: "C/O Berlin Foto 7" },
+    { src: "Fotos/CO8.jpg", alt: "C/O Berlin Foto 8" },
+    { src: "Fotos/CO9.jpg", alt: "C/O Berlin Foto 9" },
+    { src: "Fotos/CO10.jpg", alt: "C/O Berlin Foto 10" }
+  ];
+  
+  const DorfgalleryImages = [
+    { src: "Fotos/Dorf1.jpeg", alt: "Dorf Foto 1" },
+    { src: "Fotos/Dorf2.jpeg", alt: "Dorf Foto 2" },
+    { src: "Fotos/Dorf3.jpeg", alt: "Dorf Foto 3" },
+    { src: "Fotos/Dorf4.jpeg", alt: "Dorf Foto 4" },
+    { src: "Fotos/Dorf5.jpeg", alt: "Dorf Foto 5" },
+    { src: "Fotos/Dorf6.jpeg", alt: "Dorf Foto 6" },
+    { src: "Fotos/Dorf7.jpeg", alt: "Dorf Foto 7" },
+    { src: "Fotos/Dorf8.jpeg", alt: "Dorf Foto 8" },
+    { src: "Fotos/Dorf9.jpeg", alt: "Dorf Foto 9" },
+    { src: "Fotos/Dorf10.jpeg", alt: "Dorf Foto 10" }
+  ];
+  
+  const BrueckegalleryImages = [
+    { src: "Fotos/Brücke1.jpeg", alt: "Brücke Foto 1" },
+    { src: "Fotos/Brücke2.jpeg", alt: "Brücke Foto 2" },
+    { src: "Fotos/Brücke3.jpeg", alt: "Brücke Foto 3" },
+    { src: "Fotos/Brücke4.jpeg", alt: "Brücke Foto 4" },
+    { src: "Fotos/Brücke5.jpeg", alt: "Brücke Foto 5" },
+    { src: "Fotos/Brücke6.jpeg", alt: "Brücke Foto 6" },
+    { src: "Fotos/Brücke7.jpeg", alt: "Brücke Foto 7" },
+    { src: "Fotos/Brücke8.jpeg", alt: "Brücke Foto 8" },
+    { src: "Fotos/Brücke9.jpeg", alt: "Brücke Foto 9" },
+    { src: "Fotos/Brücke10.jpeg", alt: "Brücke Foto 10" }
+  ];
+  
+  const BroehangalleryImages = [
+    { src: "Fotos/Bröhan1.jpeg", alt: "Bröhan Foto 1" },
+    { src: "Fotos/Bröhan2.jpeg", alt: "Bröhan Foto 2" },
+    { src: "Fotos/Bröhan3.jpeg", alt: "Bröhan Foto 3" },
+    { src: "Fotos/Bröhan4.jpeg", alt: "Bröhan Foto 4" },
+    { src: "Fotos/Bröhan5.jpeg", alt: "Bröhan Foto 5" },
+    { src: "Fotos/Bröhan6.jpeg", alt: "Bröhan Foto 6" },
+    { src: "Fotos/Bröhan7.jpeg", alt: "Bröhan Foto 7" },
+    { src: "Fotos/Bröhan8.jpeg", alt: "Bröhan Foto 8" },
+    { src: "Fotos/Bröhan9.jpeg", alt: "Bröhan Foto 9" },
+    { src: "Fotos/Bröhan10.jpeg", alt: "Bröhan Foto 10" }
+  ];
+  
+  const LVGalleryImages = [
+    { src: "Fotos/LV1.jpeg", alt: "Liebermann Villa Foto 1" },
+    { src: "Fotos/LV2.jpeg", alt: "Liebermann Villa Foto 2" },
+    { src: "Fotos/LV3.jpeg", alt: "Liebermann Villa Foto 3" },
+    { src: "Fotos/LV4.jpeg", alt: "Liebermann Villa Foto 4" },
+    { src: "Fotos/LV5.jpeg", alt: "Liebermann Villa Foto 5" },
+    { src: "Fotos/LV6.jpeg", alt: "Liebermann Villa Foto 6" },
+    { src: "Fotos/LV7.jpeg", alt: "Liebermann Villa Foto 7" },
+    { src: "Fotos/LV8.jpeg", alt: "Liebermann Villa Foto 8" },
+    { src: "Fotos/LV9.jpeg", alt: "Liebermann Villa Foto 9" },
+    { src: "Fotos/LV10.jpeg", alt: "Liebermann Villa Foto 10" }
+  ];
+  
+  const KMGalleryImages = [
+    { src: "Fotos/km1.jpeg", alt: "Kunstgewerbe Museum Foto 1" },
+    { src: "Fotos/km2.jpeg", alt: "Kunstgewerbe Museum Foto 2" },
+    { src: "Fotos/km3.jpeg", alt: "Kunstgewerbe Museum Foto 3" },
+    { src: "Fotos/km4.jpeg", alt: "Kunstgewerbe Museum Foto 4" },
+    { src: "Fotos/km5.jpeg", alt: "Kunstgewerbe Museum Foto 5" },
+    { src: "Fotos/km6.jpeg", alt: "Kunstgewerbe Museum Foto 6" },
+    { src: "Fotos/km7.jpeg", alt: "Kunstgewerbe Museum Foto 7" },
+    { src: "Fotos/km8.jpeg", alt: "Kunstgewerbe Museum Foto 8" },
+    { src: "Fotos/km9.jpeg", alt: "Kunstgewerbe Museum Foto 9" },
+    { src: "Fotos/km10.jpeg", alt: "Kunstgewerbe Museum Foto 10" }
+  ];
+  
+  const URMGalleryImages = [
+    { src: "Fotos/URM1.jpeg", alt: "Urban Nation Museum Foto 1" },
+    { src: "Fotos/URM2.jpeg", alt: "Urban Nation Museum Foto 2" },
+    { src: "Fotos/URM3.jpeg", alt: "Urban Nation Museum Foto 3" },
+    { src: "Fotos/URM4.jpeg", alt: "Urban Nation Museum Foto 4" },
+    { src: "Fotos/URM5.jpeg", alt: "Urban Nation Museum Foto 5" },
+    { src: "Fotos/URM6.jpeg", alt: "Urban Nation Museum Foto 6" },
+    { src: "Fotos/URM7.jpeg", alt: "Urban Nation Museum Foto 7" },
+    { src: "Fotos/URM8.jpeg", alt: "Urban Nation Museum Foto 8" },
+    { src: "Fotos/URM9.jpeg", alt: "Urban Nation Museum Foto 9" },
+    { src: "Fotos/URM10.jpeg", alt: "Urban Nation Museum Foto 10" }
+  ];
+  
+  let currentImageIndex = 0;
+  
+  function openLightbox(type, index) {
+    let imagesArray;
+    
+    if (typeof type === 'string') {
+      if (type === 'co') {
+        imagesArray = coGalleryImages;
+      } else if (type === 'dorf') {
+        imagesArray = DorfgalleryImages;
+      } else if (type === 'brücke') {
+        imagesArray = BrueckegalleryImages;
+      } else if (type === 'bröhan') {
+        imagesArray = BroehangalleryImages;
+      } else if (type === 'lv') {
+        imagesArray = LVGalleryImages;
+      } else if (type === 'km') {
+        imagesArray = KMGalleryImages;
+      } else if (type === 'urm') {
+        imagesArray = URMGalleryImages;
+      } else {
+        imagesArray = galleryImages;
       }
-    ];
-
-    let currentImageIndex = 0;
-
-    function openLightbox(index) {
       currentImageIndex = index;
-      const lightbox = document.getElementById('lightbox');
-      const lightboxImage = document.getElementById('lightboxImage');
-      const lightboxCounter = document.getElementById('lightboxCounter');
-      
-      lightboxImage.src = galleryImages[index].src;
-      lightboxImage.alt = galleryImages[index].alt;
-      lightboxCounter.textContent = `${index + 1} / ${galleryImages.length}`;
-      
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
+    } else {
+      imagesArray = galleryImages;
+      currentImageIndex = type;
     }
-
-    function closeLightbox() {
-      const lightbox = document.getElementById('lightbox');
-      lightbox.classList.remove('active');
-      document.body.style.overflow = 'auto';
+    
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightboxImage');
+    const lightboxCounter = document.getElementById('lightboxCounter');
+  
+    lightboxImage.src = imagesArray[currentImageIndex].src;
+    lightboxImage.alt = imagesArray[currentImageIndex].alt;
+    lightboxCounter.textContent = `${currentImageIndex + 1} / ${imagesArray.length}`;
+  
+    // Speichere den aktuellen Galerietyp im Dataset der Lightbox
+    lightbox.dataset.galleryType =
+      (imagesArray === coGalleryImages) ? 'co' :
+      (imagesArray === DorfgalleryImages) ? 'dorf' :
+      (imagesArray === BrueckegalleryImages) ? 'brücke' :
+      (imagesArray === BroehangalleryImages) ? 'bröhan' :
+      (imagesArray === LVGalleryImages) ? 'lv' :
+      (imagesArray === KMGalleryImages) ? 'km' :
+      (imagesArray === URMGalleryImages) ? 'urm' : 'default';
+  
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    lightbox.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+  
+  function nextImage() {
+    const lightbox = document.getElementById('lightbox');
+    const galleryType = lightbox.dataset.galleryType;
+    let imagesArray;
+    
+    if (galleryType === 'co') {
+      imagesArray = coGalleryImages;
+    } else if (galleryType === 'dorf') {
+      imagesArray = DorfgalleryImages;
+    } else if (galleryType === 'brücke') {
+      imagesArray = BrueckegalleryImages;
+    } else if (galleryType === 'bröhan') {
+      imagesArray = BroehangalleryImages;
+    } else if (galleryType === 'lv') {
+      imagesArray = LVGalleryImages;
+    } else if (galleryType === 'km') {
+      imagesArray = KMGalleryImages;
+    } else if (galleryType === 'urm') {
+      imagesArray = URMGalleryImages;
+    } else {
+      imagesArray = galleryImages;
     }
-
-    function nextImage() {
-      currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-      const lightboxImage = document.getElementById('lightboxImage');
-      const lightboxCounter = document.getElementById('lightboxCounter');
-      
-      lightboxImage.src = galleryImages[currentImageIndex].src;
-      lightboxImage.alt = galleryImages[currentImageIndex].alt;
-      lightboxCounter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+    
+    currentImageIndex = (currentImageIndex + 1) % imagesArray.length;
+    const lightboxImage = document.getElementById('lightboxImage');
+    const lightboxCounter = document.getElementById('lightboxCounter');
+  
+    lightboxImage.src = imagesArray[currentImageIndex].src;
+    lightboxImage.alt = imagesArray[currentImageIndex].alt;
+    lightboxCounter.textContent = `${currentImageIndex + 1} / ${imagesArray.length}`;
+  }
+  
+  function previousImage() {
+    const lightbox = document.getElementById('lightbox');
+    const galleryType = lightbox.dataset.galleryType;
+    let imagesArray;
+    
+    if (galleryType === 'co') {
+      imagesArray = coGalleryImages;
+    } else if (galleryType === 'dorf') {
+      imagesArray = DorfgalleryImages;
+    } else if (galleryType === 'brücke') {
+      imagesArray = BrueckegalleryImages;
+    } else if (galleryType === 'bröhan') {
+      imagesArray = BroehangalleryImages;
+    } else if (galleryType === 'lv') {
+      imagesArray = LVGalleryImages;
+    } else if (galleryType === 'km') {
+      imagesArray = KMGalleryImages;
+    } else if (galleryType === 'urm') {
+      imagesArray = URMGalleryImages;
+    } else {
+      imagesArray = galleryImages;
     }
-
-    function previousImage() {
-      currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-      const lightboxImage = document.getElementById('lightboxImage');
-      const lightboxCounter = document.getElementById('lightboxCounter');
-      
-      lightboxImage.src = galleryImages[currentImageIndex].src;
-      lightboxImage.alt = galleryImages[currentImageIndex].alt;
-      lightboxCounter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+    
+    currentImageIndex = (currentImageIndex - 1 + imagesArray.length) % imagesArray.length;
+    const lightboxImage = document.getElementById('lightboxImage');
+    const lightboxCounter = document.getElementById('lightboxCounter');
+  
+    lightboxImage.src = imagesArray[currentImageIndex].src;
+    lightboxImage.alt = imagesArray[currentImageIndex].alt;
+    lightboxCounter.textContent = `${currentImageIndex + 1} / ${imagesArray.length}`;
+  }
+  
+  // Ein einzelner Keydown-Listener für Escape, ArrowRight und ArrowLeft
+  document.addEventListener('keydown', function(e) {
+    // Standardaktionen der Pfeiltasten verhindern, damit z. B. das Scrollen der Seite unterbunden wird
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
     }
-
-    // Close lightbox with ESC key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeLightbox();
-      } else if (e.key === 'ArrowRight') {
+  
+    if (e.key === 'Escape') {
+      closeLightbox();
+    } else if (e.key === 'ArrowRight') {
+      if (document.getElementById('lightbox').classList.contains('active')) {
         nextImage();
-      } else if (e.key === 'ArrowLeft') {
+      }
+    } else if (e.key === 'ArrowLeft') {
+      if (document.getElementById('lightbox').classList.contains('active')) {
         previousImage();
       }
-    });
-
-    // Close lightbox when clicking outside the image
-    document.getElementById('lightbox').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeLightbox();
+    }
+  });
+  
+  // Klick außerhalb des Lightbox-Inhalts schließt den Lightbox-Viewer
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeLightbox();
+    }
+  });
+  
+  // Funktion zum Wechseln der Content-Panels (z. B. per Navigation)
+  function showContent(id) {
+    // Entferne die "active"-Klasse von allen Panels und Buttons
+    const allPanels = document.querySelectorAll('.content-panel');
+    const allButtons = document.querySelectorAll('.timeline-button');
+  
+    allPanels.forEach(panel => panel.classList.remove('active'));
+    allButtons.forEach(button => button.classList.remove('active'));
+  
+    // Zeige das ausgewählte Panel an
+    const panel = document.getElementById('content-' + id);
+    if (panel) {
+      panel.classList.add('active');
+      
+      // Füge der entsprechenden Schaltfläche die "active"-Klasse hinzu
+      const button = event?.target?.closest('.timeline-button');
+      if (button) {
+        button.classList.add('active');
       }
-    });
-
-    function showContent(id) {
-      // Remove active class from all panels and buttons
-      const allPanels = document.querySelectorAll('.content-panel');
-      const allButtons = document.querySelectorAll('.timeline-button');
       
-      allPanels.forEach(panel => panel.classList.remove('active'));
-      allButtons.forEach(button => button.classList.remove('active'));
+      // Scrolle zuerst zum oberen Rand des Content-Bereichs
+      const contentArea = document.querySelector('.content-area');
+      contentArea.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
       
-      // Show selected panel
-      const panel = document.getElementById('content-' + id);
-      if (panel) {
-        panel.classList.add('active');
-        
-        // Add active class to corresponding button
-        const button = event?.target?.closest('.timeline-button');
-        if (button) {
-          button.classList.add('active');
-        }
-        
-        // Scroll to top of content area first
-        const contentArea = document.querySelector('.content-area');
-        contentArea.scrollTo({
-          top: 0,
-          behavior: 'smooth'
+      // Scrollt auch das Hauptfenster zum Content-Bereich (leicht verzögert)
+      setTimeout(() => {
+        contentArea.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
         });
-        
-        // Also scroll the main window to the top of the content area
-        setTimeout(() => {
-          contentArea.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 100);
-      }
+      }, 100);
     }
-
-    function toggleInfoPanel() {
-      const panel = document.getElementById('infoPanel');
-      const button = document.querySelector('.toggle-btn');
-      
-      panel.classList.toggle('collapsed');
-      
-      if (panel.classList.contains('collapsed')) {
-        button.innerHTML = '▶';
-        button.title = 'Panel öffnen';
-      } else {
-        button.innerHTML = '◀';
-        button.title = 'Panel schließen';
-      }
+  }
+  
+  // Funktion zum Umschalten der Info-Panel-Anzeige (aus-/einklappen)
+  function toggleInfoPanel() {
+    const panel = document.getElementById('infoPanel');
+    const button = document.querySelector('.toggle-btn');
+    
+    panel.classList.toggle('collapsed');
+    
+    if (panel.classList.contains('collapsed')) {
+      button.innerHTML = '▶';
+      button.title = 'Panel öffnen';
+    } else {
+      button.innerHTML = '◀';
+      button.title = 'Panel schließen';
     }
-
-    // Initialize with first content
-    document.addEventListener('DOMContentLoaded', function() {
-      const firstButton = document.querySelector('.timeline-button');
-      if (firstButton) {
-        firstButton.classList.add('active');
-      }
-    });
+  }
+  
+  // Initialisierung: Setzt den ersten Navigationsbutton beim Laden der Seite aktiv.
+  document.addEventListener('DOMContentLoaded', function() {
+    const firstButton = document.querySelector('.timeline-button');
+    if (firstButton) {
+      firstButton.classList.add('active');
+    }
+  });
   </script>
-</body>
-</html>
