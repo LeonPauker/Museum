@@ -52,155 +52,162 @@ max-width: 100vw;
 overflow-x: hidden;
 }
 
+/* Info-Panel – offener Zustand */
 .info-panel {
-flex: 1;
-max-width: 300px;
-background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
-border: 1px solid #c9a96e;
-border-radius: 8px;
-height: fit-content;
-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-transition: all 0.3s ease;
-overflow: hidden;
-position: relative;
+  flex: 1;
+  max-width: 300px;
+  background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+  border: 1px solid #c9a96e;
+  border-radius: 8px;
+  /* Feste Höhe setzen, um den gesamten Inhalt innerhalb des Panels scrollbar zu machen */
+  height: calc(100vh - 80px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
+/* Geschlossener (collapsed) Zustand – kompakt und ohne Scrollen */
 .info-panel.collapsed {
-max-width: 80px;
-min-width: 80px;
+  max-width: 60px;
+  min-width: 60px;
+  height: 50px; /* Feste Höhe, damit das Panel nicht in die Höhe wächst */
+  overflow: hidden; /* Keine Scrollbarkeit im collapsed-Zustand */
 }
 
 .info-panel.collapsed .info-content {
-display: none;
+  display: none;
 }
 
 .info-panel-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 1.5rem;
-margin: 0;
-border-bottom: 2px solid #c9a96e;
-margin-bottom: 1.5rem;
-position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  margin: 0;
+  border-bottom: 2px solid #c9a96e;
+  margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .info-panel.collapsed .info-panel-header {
-padding: 1.5rem 0.5rem;
-margin-bottom: 0;
-border-bottom: none;
-justify-content: center;
+  padding: 1.5rem 0.5rem;
+  margin-bottom: 0;
+  border-bottom: none;
+  justify-content: center;
 }
 
 .info-panel h2 {
-color: #c9a96e;
-font-size: 1.2rem;
-margin: 0;
-text-transform: uppercase;
-letter-spacing: 1px;
-transition: all 0.3s ease;
-flex-grow: 1;
-padding-right: 1rem;
+  color: #c9a96e;
+  font-size: 1.2rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  flex-grow: 1;
+  padding-right: 1rem;
 }
 
 .info-panel.collapsed h2 {
-opacity: 0;
-transform: translateX(-20px);
-font-size: 0;
-padding-right: 0;
+  opacity: 0;
+  transform: translateX(-20px);
+  font-size: 0;
+  padding-right: 0;
 }
 
 .toggle-btn {
-background: linear-gradient(145deg, #c9a96e, #b8956a);
-border: 3px solid #d4af37;
-color: #1a1a1a;
-width: 45px;
-height: 45px;
-border-radius: 8px;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 1.6rem;
-font-weight: bold;
-transition: all 0.3s ease;
-flex-shrink: 0;
-box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
-position: relative;
+  background: linear-gradient(145deg, #c9a96e, #b8956a);
+  border: 3px solid #d4af37;
+  color: #1a1a1a;
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
+  position: relative;
 }
 
+/* Toggle-Button im collapsed-Zustand – sobald das Panel geschlossen ist */
 .info-panel.collapsed .toggle-btn {
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-border-radius: 50%;
-width: 50px;
-height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
 }
 
 .toggle-btn:hover {
-background: linear-gradient(145deg, #d4af37, #c9a96e);
-border-color: #ffae42;
-transform: scale(1.1);
-box-shadow: 0 6px 20px rgba(201, 169, 110, 0.6);
+  background: linear-gradient(145deg, #d4af37, #c9a96e);
+  border-color: #ffae42;
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(201, 169, 110, 0.6);
 }
 
 .info-panel.collapsed .toggle-btn:hover {
-transform: translate(-50%, -50%) scale(1.1);
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 .toggle-btn:active {
-transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .info-panel.collapsed .toggle-btn:active {
-transform: translate(-50%, -50%) scale(1.05);
+  transform: translate(-50%, -50%) scale(1.05);
 }
 
 .toggle-btn::before {
-content: '';
-position: absolute;
-top: -3px;
-left: -3px;
-right: -3px;
-bottom: -3px;
-background: linear-gradient(45deg, #c9a96e, #d4af37, #ffae42, #c9a96e);
-border-radius: inherit;
-z-index: -1;
-opacity: 0;
-transition: opacity 0.3s ease;
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(45deg, #c9a96e, #d4af37, #ffae42, #c9a96e);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .info-panel.collapsed .toggle-btn::before {
-border-radius: 50%;
+  border-radius: 50%;
 }
 
 .toggle-btn:hover::before {
-opacity: 0.3;
+  opacity: 0.3;
 }
 
 .info-content {
-padding: 0 2rem 2rem 2rem;
-transition: opacity 0.3s ease;
-overflow: hidden;
+  padding: 0 2rem 2rem 2rem;
+  transition: opacity 0.3s ease;
+  overflow: hidden;
 }
 
 .info-section {
-margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .info-section h3 {
-color: #d4af37;
-font-size: 1.1rem;
-margin-bottom: 0.8rem;
-font-weight: 600;
+  color: #d4af37;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
 }
 
 .info-section p {
-font-size: 0.95rem;
-color: #cccccc;
-margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: #cccccc;
+  margin-bottom: 1rem;
 }
 
 .methodology-list {
@@ -728,7 +735,7 @@ background: #d4af37;
   </div>
   
   <h3>Gestalterische Innovation</h3>
-  <p>Herausragend ist die adaptive Raumgestaltung: Jeder Ausstellungsbereich wird individuell an die gezeigten Fotografien angepasst. Sommerliche Bilder werden mit heller Beleuchtung und warmen Wandfarben kombiniert, wodurch eine synergetische Wirkung zwischen Raum und Exponat entsteht. Licht und Farbe werden als aktive Gestaltungsmittel eingesetzt.</p>
+  <p>Besonders beeindruckend ist die flexible Raumgestaltung: Jeder Ausstellungsbereich wird individuell auf die präsentierten Fotografien abgestimmt. Sommerliche Bilder werden mit heller Beleuchtung und warmen Wandfarben inszeniert, sodass eine harmonische Wechselwirkung zwischen Raum und Exponat entsteht. Licht und Farbe kommen dabei als dynamische Gestaltungsmittel zum Einsatz.</p>
   
   <h3>Bildergalerie</h3>
   <div class="image-gallery">
@@ -807,7 +814,7 @@ background: #d4af37;
   </ul>
   
   <div class="highlight-box">
-    <p>Das Museum für Fotografie demonstriert eindrucksvoll, wie adaptive Raumgestaltung die Wirkung von Exponaten verstärken kann - ein Modell für zeitgemäße Museumskonzeption.</p>
+    <p>Das Museum für Fotografie demonstriert eindrucksvoll, wie anpassungsfähig Raumgestaltung auf die Wirkung von Exponaten verstärken kann - ein Modell für zeitgemäße Museumskonzeption.</p>
   </div>
 </div>
 
@@ -822,7 +829,7 @@ background: #d4af37;
   <p>Das Museum richtet sich primär an Erwachsene mit Lebenserfahrung, da viele Themen biografische Bezüge voraussetzen. Kinder können ebenfalls profitieren, benötigen jedoch Grundkenntnisse über Kolonialismus und historische Zusammenhänge. Die kritische Auseinandersetzung mit gesellschaftlichen Themen steht im Vordergrund.</p>
   
   <h3>Innovative Gestaltungskonzepte</h3>
-  <p>Herausragend ist die adaptive Raumumgebung: Musik und Licht reagieren auf das Verhalten der Besucher. In Räumen mit Musik entstehen Gespräche, während ruhige und melancholische Bereiche zu stiller Kontemplation einladen. Die Rahmen wurden individuell an die Exponate angepasst, wodurch eine harmonische Gesamtwirkung entsteht.</p>
+  <p>Herausragend ist die Raumumgebung: Musik und Licht reagieren auf das Verhalten der Besucher. In Räumen mit Musik entstehen Gespräche, während ruhige und melancholische Bereiche zu stiller Kontemplation einladen. Die Rahmen wurden individuell an die Exponate angepasst, wodurch eine harmonische Gesamtwirkung entsteht.</p>
   
   <div class="highlight-box">
     <p>"Die Ausstellung schafft es, durch geschickte Inszenierung von Licht, Musik und Raum eine emotionale Bandbreite von Liebe bis Trauer zu vermitteln - ein Beispiel für zeitgemäße multimediale Museumsgestaltung."</p>
@@ -898,7 +905,7 @@ background: #d4af37;
   </div>
   
   <h3>Kritische Bewertung & Verbesserungsvorschläge</h3>
-  <p><strong>Positive Aspekte:</strong> Effektive Nutzung multipler Gestaltungselemente, konstante Spannungserhaltung durch thematische Abwechslung, innovative Verbindung von afrikanischen und europäischen Perspektiven, adaptive Raumumgebung.</p>
+  <p><strong>Positive Aspekte:</strong>Effektive Nutzung multipler Gestaltungselemente, konstante Spannung durch thematische Abwechslung, innovative Verknüpfung afrikanischer und europäischer Perspektiven sowie eine vielseitige Raumgestaltung.</p>
   
   <p><strong>Verbesserungspotential:</strong></p>
   <ul class="methodology-list">
@@ -912,7 +919,7 @@ background: #d4af37;
   <p>Die Ausstellung zeigt vorbildlich, wie koloniale Geschichte und zeitgenössische Kunst in einen kritischen Dialog gebracht werden können. Die Gegenüberstellung verschiedener kultureller Perspektiven ohne Hierarchisierung ist ein wichtiger Beitrag zur Dekolonisierung der Museumslandschaft.</p>
   
   <div class="highlight-box">
-    <p>C/O Berlin demonstriert eindrucksvoll, wie multimediale Elemente und adaptive Raumgestaltung eine emotionale und intellektuelle Auseinandersetzung mit komplexen gesellschaftlichen Themen ermöglichen können.</p>
+    <p>C/O Berlin demonstriert eindrucksvoll, wie multimediale Elemente und verschiedene Raumgestaltung eine emotionale und intellektuelle Auseinandersetzung mit komplexen gesellschaftlichen Themen ermöglichen können.</p>
   </div>
 </div>
 
@@ -1046,7 +1053,7 @@ background: #d4af37;
   </div>
   
   <h3>Kuratorische Innovation & Sortierungssystem</h3>
-  <p>Die durchdachte Hängung der Bilder folgt multiple Ordnungsprinzipien: alphabetische und numerische Sortierung nach den auswählenden Personen, adaptive Höhenpositionierung (Kinderbilder werden niedriger gehängt für bessere Zugänglichkeit), sowie bewusste Variation zwischen einheitlichen und unterschiedlichen Höhen. Die Größenvariation von klein zu groß schafft visuellen Rhythmus.</p>
+  <p>Die durchdachte Hängung der Bilder folgt multiple Ordnungsprinzipien: alphabetische und numerische Sortierung nach den auswählenden Personen, angepassten Höhenpositionierung (Kinderbilder werden niedriger gehängt für bessere Zugänglichkeit), sowie bewusste Variation zwischen einheitlichen und unterschiedlichen Höhen. Die Größenvariation von klein zu groß schafft visuellen Rhythmus.</p>
   
   <h3>Textgestaltung & Narrative Vermittlung</h3>
   <p>Herausragend sind die Begleittexte zu den Kunstwerken, die als "Highlight der Ausstellung" wahrgenommen werden. Sie sind schön formuliert, witzig und prägnant kurz gehalten - oft interessanter als die Bilder selbst. Diese Texte schaffen Zugänge und wecken Neugier, ohne zu überwältigen.</p>
@@ -1165,7 +1172,7 @@ background: #d4af37;
   </div>
   
   <h3>Innovative Vermittlungsstrategien</h3>
-  <p>Das Museum zeichnet sich durch experimentfreundliche Ansätze aus und stellt klar dar, "wie es früher war". Besonders bemerkenswert ist die adaptive Raumgestaltung: jeder Ausstellungsraum wird individuell an die präsentierten Objekte angepasst, wodurch eine optimale Präsentationsumgebung entsteht.</p>
+  <p>Das Museum zeichnet sich durch experimentfreundliche Ansätze aus und stellt klar dar, "wie es früher war". Besonders bemerkenswert ist die Raumgestaltung: jeder Ausstellungsraum wird individuell an die präsentierten Objekte angepasst, wodurch eine optimale Präsentationsumgebung entsteht.</p>
   
   <h3>Gestalterische Umsetzung & Raumkonzept</h3>
   <p>Die thematische Gestaltung erfolgt durch geschickte Kombination verschiedener Elemente: Poster und Gemälde werden mit abgestimmten Wandfarben kombiniert und individuell an die Möbel angepasst. Diese multimodale Herangehensweise schafft kohärente, aber abwechslungsreiche Raumwelten.</p>
@@ -1251,7 +1258,7 @@ background: #d4af37;
   </ul>
   
   <div class="highlight-box">
-    <p>Das Bröhan Museum zeigt vorbildlich, wie adaptive Raumgestaltung und textfreie Wissensvermittlung eine emotionale und intellektuelle Auseinandersetzung mit Designgeschichte ermöglichen - ein Modell für zeitgemäße Designmuseen.</p>
+    <p>Das Bröhan Museum zeigt vorbildlich, wie unterschiedliche Raumgestaltung und textfreie Wissensvermittlung eine emotionale und intellektuelle Auseinandersetzung mit Designgeschichte ermöglichen - ein Modell für zeitgemäße Designmuseen.</p>
   </div>
 </div>
 
@@ -1476,7 +1483,7 @@ background: #d4af37;
   <p>Die Ausstellung arbeitet "mit viel Text", wodurch Besucher "viel verstehen" können. Diese umfassende textuelle Begleitung ermöglicht eine tiefe Auseinandersetzung mit der komplexen Geschichte und kulturellen Bedeutung der urbanen Kunst von den 70er Jahren bis heute.</p>
   
   <h3>Kritische Bewertung & Verbesserungsvorschläge</h3>
-  <p><strong>Positive Aspekte:</strong> Sehr interessante und umfassende Ausstellung mit viel zu sehen, adaptive Raumgestaltung, experimentfreundliche Präsentation, umfassende historische Abdeckung von den 70ern bis heute, individueller Raumcharakter, gelungene Integration von Farbgestaltung und Objekten.</p>
+  <p><strong>Positive Aspekte:</strong> Sehr interessante und umfassende Ausstellung mit viel zu sehen, flexible Raumgestaltung, experimentfreundliche Präsentation, umfassende historische Abdeckung von den 70ern bis heute, individueller Raumcharakter, gelungene Integration von Farbgestaltung und Objekten.</p>
   
   <p><strong>Verbesserungspotential:</strong></p>
   <ul class="methodology-list">
@@ -1486,7 +1493,7 @@ background: #d4af37;
   </ul>
   
   <div class="highlight-box">
-    <p>Das Urban Nation Museum zeigt vorbildlich, wie adaptive Raumgestaltung und umfassende historische Kontextualisierung eine emotionale und intellektuelle Auseinandersetzung mit urbaner Kunstgeschichte ermöglichen - ein Modell für zeitgemäße Museen alternativer Kunstformen.</p>
+    <p>Das Urban Nation Museum zeigt vorbildlich, wie wichtig die passende Raumgestaltung und umfassende historische Kontextualisierung eine emotionale und intellektuelle Auseinandersetzung mit urbaner Kunstgeschichte ermöglichen - ein Modell für zeitgemäße Museen alternativer Kunstformen.</p>
   </div>
 </div>
 
